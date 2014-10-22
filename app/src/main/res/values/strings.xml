@@ -4,5 +4,8 @@
     <string name="app_name">CodeClock</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="job1">job1</string>
+    <string name="job2">job2</string>
+    <string name="job3">job3</string>
 
 </resources>
