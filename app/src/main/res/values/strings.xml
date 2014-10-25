@@ -7,5 +7,7 @@
     <string name="job1">job1</string>
     <string name="job2">job2</string>
     <string name="job3">job3</string>
+    <string name="title_activity_job">job</string>
+    <string name="mark_finished">Mark Complete</string>
 
 </resources>
