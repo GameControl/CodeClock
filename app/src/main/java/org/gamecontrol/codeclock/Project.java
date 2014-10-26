@@ -91,7 +91,7 @@ public class Project {
 
         if (jobs != null) {
             for (Job j : jobs)
-                json.put(j.getUuid().toString(), j.toJSON());
+                json.put(j.getUUID().toString(), j.toJSON());
         }
 
         return json;

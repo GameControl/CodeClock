@@ -41,22 +41,6 @@ public class Job {
         return projectUUID;
     }
 
-    public UUID getProject() {
-        return project;
-    }
-
-    public void setProject(UUID project) {
-        this.project = project;
-    }
-
-    public UUID getTimerUUID() {
-        return timerUUID;
-    }
-
-    public void setTimerUUID(UUID timerUUID) {
-        this.timerUUID = timerUUID;
-    }
-
     public String getName() {
         return name;
     }
@@ -109,11 +93,14 @@ public class Job {
         if (estimate != job.estimate) return false;
         if (name != null ? !name.equals(job.name) : job.name != null) return false;
         if (notes != null ? !notes.equals(job.notes) : job.notes != null) return false;
-        if (projectUUID != null ? !projectUUID.equals(job.projectUUID) : job.projectUUID != null) return false;
+        if (projectUUID != null ? !projectUUID.equals(job.projectUUID) : job.projectUUID != null)
+            return false;
         if (tags != null ? !tags.equals(job.tags) : job.tags != null) return false;
         if (uuid != null ? !uuid.equals(job.uuid) : job.uuid != null) return false;
 
         return true;
+    }
+
     public void addStartTime(Long time) {
         startTimes.add(time);
     }
@@ -127,6 +114,8 @@ public class Job {
         result = 31 * result + (notes != null ? notes.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;
+    }
+
     public Long getLastStartTime() { return startTimes.get(startTimes.size() - 1); }
 
     public void addRunningTimes(Long time) {

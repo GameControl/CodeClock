@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
+
 public class HomeActivity extends Activity {
+
     public final static String EXTRA_MESSAGE = "org.gamecontrol.codeclock.MESSAGE";
     private ArrayList<String> getProjects(){
         ArrayList<String> output = new ArrayList<String>();
@@ -33,13 +35,8 @@ public class HomeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
+
         testProjectSave();
-    }
 
         GridView gridview = (GridView) findViewById(R.id.projectGridView);
 
@@ -137,9 +134,8 @@ public class HomeActivity extends Activity {
     }
 
     public Job makeDummyJob(UUID projectUUID) {
-        Job dummyJob = new Job();
-        dummyJob.setUuid(UUID.randomUUID());
-        dummyJob.setProjectUUID(projectUUID);
+        Job dummyJob = new Job(UUID.randomUUID(), projectUUID, "", 1, null);
+
         dummyJob.setName("JobName" + Math.round(Math.random()*10));
         dummyJob.setEstimate(Math.round(Math.random() * 100));
         dummyJob.setNotes("Enter notes here...");
