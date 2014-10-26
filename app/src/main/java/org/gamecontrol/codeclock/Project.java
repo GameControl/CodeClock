@@ -1,5 +1,6 @@
 package org.gamecontrol.codeclock;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,15 +12,10 @@ import java.util.UUID;
  */
 public class Project {
 
-    private static final String JSON_UUID = "uuid";
-    private static final String JSON_TAGS = "tags";
-    private static final String JSON_NOTES = "notes";
-    private static final String JSON_JOBS = "jobs";
-
     private UUID uuid;
     private ArrayList<String> tags;
     private String notes;
-    private ArrayList<UUID> jobs;
+    private ArrayList<Job> jobs;
 
     public Project() {
     }
@@ -48,11 +44,11 @@ public class Project {
         this.notes = notes;
     }
 
-    public ArrayList<UUID> getJobs() {
+    public ArrayList<Job> getJobs() {
         return jobs;
     }
 
-    public void setJobs(ArrayList<UUID> jobs) {
+    public void setJobs(ArrayList<Job> jobs) {
         this.jobs = jobs;
     }
 
@@ -82,8 +78,22 @@ public class Project {
 
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put(JSON_UUID, uuid.toString());
-        json.put(JSON_NOTES, notes);
+        json.put("uuid", uuid.toString());
+
+        JSONArray tagsArrayJSON = new JSONArray();
+        json.put("tags", tagsArrayJSON);
+        if (tags != null) {
+            for (String t : tags)
+                tagsArrayJSON.put(t);
+        }
+
+        json.put("notes", notes);
+
+        if (jobs != null) {
+            for (Job j : jobs)
+                json.put(j.getUuid().toString(), j.toJSON());
+        }
+
         return json;
     }
 
