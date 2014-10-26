@@ -3,6 +3,7 @@ package org.gamecontrol.codeclock;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,18 +15,23 @@ import android.os.Build;
 
 
 public class JobActivity extends Activity {
-
+    private String jobName = "";
     private Job job;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job);
-        if (savedInstanceState == null) {
+
+        // Get the Intent from HomeActivity
+        Intent intent = getIntent();
+        jobName = intent.getStringExtra(HomeActivity.EXTRA_MESSAGE);
+
+/*        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
-        }
+        }*/
     }
 
     @Override
@@ -33,7 +39,7 @@ public class JobActivity extends Activity {
         super.onResume();  // Always call the superclass method first
 
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle("Hello");
+        actionBar.setTitle(jobName);
     }
 
 
@@ -57,7 +63,6 @@ public class JobActivity extends Activity {
     }
 
     public void toggleTimer(View v) {
-
     }
 
     /**

@@ -9,5 +9,6 @@
     <string name="job3">job3</string>
     <string name="title_activity_job">job</string>
     <string name="mark_finished">Mark Complete</string>
+    <string name="title_activity_project">ProjectActivity</string>
 
 </resources>

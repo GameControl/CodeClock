@@ -3,6 +3,7 @@ package org.gamecontrol.codeclock;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,10 +19,10 @@ import java.util.ArrayList;
 
 
 public class HomeActivity extends Activity {
-
+    public final static String EXTRA_MESSAGE = "org.gamecontrol.codeclock.MESSAGE";
     private ArrayList<String> getProjects(){
         ArrayList<String> output = new ArrayList<String>();
-        for(int i=0; i < 6; i++){
+        for(int i=0; i < 20; i++){
             output.add("Project " + i);
         }
         return output;
@@ -32,19 +33,24 @@ public class HomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        GridView gridview = (GridView) findViewById(R.id.projectGridview);
+        GridView gridview = (GridView) findViewById(R.id.projectGridView);
 
         gridview.setAdapter(new ProjectAdapter(this, getProjects()));
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                //Toast.makeText(HomeActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
+                String message = "" + position;
+                intent.putExtra(EXTRA_MESSAGE, message);
+                startActivity(intent);
+            }
+        });
+
 //        if (savedInstanceState == null) {
 //            getFragmentManager().beginTransaction()
 //                    .add(R.id.container, new PlaceholderFragment())
 //                    .commit();
 //        }
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(HomeActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override

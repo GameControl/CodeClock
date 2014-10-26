@@ -12,24 +12,23 @@ import java.util.ArrayList;
 /**
  * Created by illwrath on 10/25/14.
  */
-public class ProjectAdapter extends BaseAdapter{
-
+public class JobAdapter extends BaseAdapter{
     private Context mContext;
-    private ArrayList<String> projectNames;
+    private ArrayList<String> jobNames;
 
-    public ProjectAdapter(Context c, ArrayList<String> names){
+    public JobAdapter(Context c, ArrayList<String> names){
         mContext = c;
-        projectNames = names;
+        jobNames = names;
     }
 
     @Override
     public int getCount() {
-        return projectNames.size();
+        return jobNames.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return projectNames.get(position);
+        return jobNames.get(position);
     }
 
     @Override
@@ -40,16 +39,16 @@ public class ProjectAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View gridView;
+        View listview;
 
         if(convertView == null){
-            gridView = new View(mContext);
+            listview = new View(mContext);
         } else {
-            gridView = (View) convertView;
+            listview = (View) convertView;
         }
-        gridView = inflater.inflate(R.layout.grid_item_project, null);
-        TextView textView = (TextView) gridView.findViewById(R.id.grid_item_name);
-        textView.setText(projectNames.get(position));
-        return gridView;
+        listview = inflater.inflate(R.layout.list_item_job, null);
+        TextView textView = (TextView) listview.findViewById(R.id.list_item_name);
+        textView.setText(jobNames.get(position));
+        return listview;
     }
 }
