@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 
@@ -68,19 +70,51 @@ public class Home extends Activity {
     }
 
     public void testProjectSave() {
-        UUID testUUID = UUID.randomUUID();
-        Project testProject = new Project();
-        testProject.setUuid(testUUID);
-        testProject.setNotes("WUT DIS NOTEZ?");
+        // Make dummy projects and jobs
+        Project testProject = makeDummyProject();
 
         CodeClockJSONSerializer testSerializer = new CodeClockJSONSerializer(this);
         try {
-            testSerializer.saveProject(testProject, testUUID.toString() + ".json");
+            testSerializer.saveProject(testProject, testProject.getUuid().toString() + ".json");
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Project makeDummyProject() {
+        Project dummyProject = new Project();
+
+        dummyProject.setUuid(UUID.randomUUID());
+
+        ArrayList<Job> jobs = new ArrayList<Job>();
+        jobs.add(makeDummyJob(dummyProject.getUuid()));
+        jobs.add(makeDummyJob(dummyProject.getUuid()));
+        jobs.add(makeDummyJob(dummyProject.getUuid()));
+        dummyProject.setJobs(jobs);
+
+        ArrayList<String> tags = new ArrayList<String>(Arrays.asList("Peace", "has", "sapped", "your", "strength."));
+        dummyProject.setTags(tags);
+
+        dummyProject.setNotes("Victory has defeated you.");
+
+
+
+        return dummyProject;
+    }
+
+    public Job makeDummyJob(UUID projectUUID) {
+        Job dummyJob = new Job();
+        dummyJob.setUuid(UUID.randomUUID());
+        dummyJob.setProjectUUID(projectUUID);
+        dummyJob.setName("JobName" + Math.round(Math.random()*10));
+        dummyJob.setEstimate(Math.round(Math.random() * 100));
+        dummyJob.setNotes("Enter notes here...");
+        ArrayList<String> tags = new ArrayList<String>(Arrays.asList("your", "spirit", "or", "your body!"));
+        dummyJob.setTags(tags);
+
+        return dummyJob;
     }
 }
 

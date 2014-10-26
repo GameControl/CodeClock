@@ -1,5 +1,6 @@
 package org.gamecontrol.codeclock;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -11,8 +12,7 @@ import java.util.UUID;
 public class Job {
 
     private UUID uuid;
-    private UUID project;
-    private UUID timerUUID;
+    private UUID projectUUID;
 
     private String name;
     private long estimate;
@@ -30,20 +30,12 @@ public class Job {
         this.uuid = uuid;
     }
 
-    public UUID getProject() {
-        return project;
+    public UUID getProjectUUID() {
+        return projectUUID;
     }
 
-    public void setProject(UUID project) {
-        this.project = project;
-    }
-
-    public UUID getTimerUUID() {
-        return timerUUID;
-    }
-
-    public void setTimerUUID(UUID timerUUID) {
-        this.timerUUID = timerUUID;
+    public void setProjectUUID(UUID projectUUID) {
+        this.projectUUID = projectUUID;
     }
 
     public String getName() {
@@ -88,10 +80,8 @@ public class Job {
         if (estimate != job.estimate) return false;
         if (name != null ? !name.equals(job.name) : job.name != null) return false;
         if (notes != null ? !notes.equals(job.notes) : job.notes != null) return false;
-        if (project != null ? !project.equals(job.project) : job.project != null) return false;
+        if (projectUUID != null ? !projectUUID.equals(job.projectUUID) : job.projectUUID != null) return false;
         if (tags != null ? !tags.equals(job.tags) : job.tags != null) return false;
-        if (timerUUID != null ? !timerUUID.equals(job.timerUUID) : job.timerUUID != null)
-            return false;
         if (uuid != null ? !uuid.equals(job.uuid) : job.uuid != null) return false;
 
         return true;
@@ -100,8 +90,7 @@ public class Job {
     @Override
     public int hashCode() {
         int result = uuid != null ? uuid.hashCode() : 0;
-        result = 31 * result + (project != null ? project.hashCode() : 0);
-        result = 31 * result + (timerUUID != null ? timerUUID.hashCode() : 0);
+        result = 31 * result + (projectUUID != null ? projectUUID.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (int) (estimate ^ (estimate >>> 32));
         result = 31 * result + (notes != null ? notes.hashCode() : 0);
@@ -110,6 +99,18 @@ public class Job {
     }
 
     public JSONObject toJSON() throws JSONException{
-        return null;
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("estimate", estimate);
+        json.put("notes", notes);
+
+        JSONArray tagsArrayJSON = new JSONArray();
+        json.put("tags", tagsArrayJSON);
+        if (tags != null) {
+            for (String t : tags)
+                tagsArrayJSON.put(t);
+        }
+
+        return json;
     }
 }
