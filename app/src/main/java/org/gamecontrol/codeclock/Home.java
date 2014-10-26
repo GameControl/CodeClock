@@ -1,7 +1,6 @@
 package org.gamecontrol.codeclock;
 
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,11 +8,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.UUID;
 
 
 public class Home extends Activity {
+
+    private static final String TAG_FILE = "Files";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,7 @@ public class Home extends Activity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+        testProjectSave();
     }
 
 
@@ -61,4 +66,21 @@ public class Home extends Activity {
             return rootView;
         }
     }
+
+    public void testProjectSave() {
+        UUID testUUID = UUID.randomUUID();
+        Project testProject = new Project();
+        testProject.setUuid(testUUID);
+        testProject.setNotes("WUT DIS NOTEZ?");
+
+        CodeClockJSONSerializer testSerializer = new CodeClockJSONSerializer(this);
+        try {
+            testSerializer.saveProject(testProject, testUUID.toString() + ".json");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
