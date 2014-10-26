@@ -10,22 +10,42 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 
+public class HomeActivity extends Activity {
 
-public class Home extends Activity {
+    private ArrayList<String> getProjects(){
+        ArrayList<String> output = new ArrayList<String>();
+        for(int i=0; i < 6; i++){
+            output.add("Project " + i);
+        }
+        return output;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
-    }
 
+        GridView gridview = (GridView) findViewById(R.id.projectGridview);
+
+        gridview.setAdapter(new ProjectAdapter(this, getProjects()));
+//        if (savedInstanceState == null) {
+//            getFragmentManager().beginTransaction()
+//                    .add(R.id.container, new PlaceholderFragment())
+//                    .commit();
+//        }
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Toast.makeText(HomeActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -44,6 +64,10 @@ public class Home extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void createProject(View v) {
+
     }
 
     /**

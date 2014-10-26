@@ -15,6 +15,8 @@ import android.os.Build;
 
 public class JobActivity extends Activity {
 
+    private Job job;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +26,14 @@ public class JobActivity extends Activity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("Hello");
     }
 
 
@@ -44,6 +54,10 @@ public class JobActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void toggleTimer(View v) {
+
     }
 
     /**

@@ -27,10 +27,12 @@
             android:paddingBottom="45dp">
 
             <Button
+                android:id="@+id/jobButton"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/dial_stopped"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:onClick="toggleTimer"/>
         </FrameLayout>
 
         <Button
