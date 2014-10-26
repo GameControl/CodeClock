@@ -1,7 +1,6 @@
 package org.gamecontrol.codeclock;
 
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,13 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.UUID;
 
 public class HomeActivity extends Activity {
     public final static String EXTRA_MESSAGE = "org.gamecontrol.codeclock.MESSAGE";
@@ -92,4 +92,21 @@ public class HomeActivity extends Activity {
             return rootView;
         }
     }
+
+    public void testProjectSave() {
+        UUID testUUID = UUID.randomUUID();
+        Project testProject = new Project();
+        testProject.setUuid(testUUID);
+        testProject.setNotes("WUT DIS NOTEZ?");
+
+        CodeClockJSONSerializer testSerializer = new CodeClockJSONSerializer(this);
+        try {
+            testSerializer.saveProject(testProject, testUUID.toString() + ".json");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
