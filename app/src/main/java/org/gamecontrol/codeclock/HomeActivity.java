@@ -40,8 +40,7 @@ public class HomeActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 //Toast.makeText(HomeActivity.this, "" + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
-                String message = "" + position;
-                intent.putExtra(EXTRA_MESSAGE, message);
+                intent.putExtra(EXTRA_MESSAGE, "" + position);
                 startActivity(intent);
             }
         });
@@ -73,6 +72,8 @@ public class HomeActivity extends Activity {
     }
 
     public void createProject(View v) {
+        Intent intent = new Intent(HomeActivity.this, CreateProjectActivity.class);
+        startActivity(intent);
 
     }
 

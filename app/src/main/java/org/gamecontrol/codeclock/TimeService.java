@@ -8,13 +8,28 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class TimeService extends Service {
+    private boolean running;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        running = false;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (!running) {
+            running = true;
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
-    private String msToHourMinSec(long ms) {
+    public static String msToHourMinSec(long ms) {
         if(ms == 0) {
             return "00:00";
         } else {
@@ -57,24 +72,25 @@ public class TimeService extends Service {
 
     public static class TimeContainer {
 
-        public static final int STATE_START = 0;
+        public static final int STATE_INIT = 0;
         public static final int STATE_PAUSED = 1;
         public static final int STATE_RUNNING = 2;
 
         private int currentState;
-        private ArrayList<Long> startTimes;
-        private ArrayList<Long> runningTimes;
+        private Job job;
         private static TimeContainer instance;
-
-        private long totalElapsed;
 
         private final Object mSynchronizedObject = new Object();
 
         private TimeContainer() {
-            currentState = STATE_START;
-            startTimes = new ArrayList<Long>();
-            runningTimes = new ArrayList<Long>();
-            totalElapsed = 0;
+            currentState = STATE_INIT;
+        }
+
+        public UUID getJobUUID() {
+            if(job != null)
+                return job.getUUID();
+            else
+                return null;
         }
 
         public int getCurrentState() {
@@ -85,37 +101,17 @@ public class TimeService extends Service {
             this.currentState = currentState;
         }
 
-        public ArrayList<Long> getStartTimes() {
-            return startTimes;
-        }
-
-        public void setStartTimes(ArrayList<Long> startTimes) {
-            this.startTimes = startTimes;
-        }
-
-        public ArrayList<Long> getRunningTimes() {
-            return runningTimes;
-        }
-
-        public void setRunningTimes(ArrayList<Long> runningTimes) {
-            this.runningTimes = runningTimes;
-        }
-
-        public void setTotalElapsed(long totalElapsed) {
-            this.totalElapsed = totalElapsed;
-        }
-
         public long getTotalElapsed() {
             if(currentState == STATE_RUNNING){
-                return totalElapsed + (System.currentTimeMillis() - startTimes.get(startTimes.size()));
+                return job.getElapsed() + (System.currentTimeMillis() - job.getLastStartTime());
             } else
-                return totalElapsed;
+                return job.getElapsed();
         }
 
         public void start() {
             if(currentState != STATE_RUNNING) {
                 synchronized (mSynchronizedObject) {
-                    startTimes.add(System.currentTimeMillis());
+                    job.addStartTime(System.currentTimeMillis());
                     currentState = STATE_RUNNING;
                 }
             }
@@ -125,9 +121,8 @@ public class TimeService extends Service {
             if(currentState == STATE_RUNNING) {
                 synchronized (mSynchronizedObject) {
                     currentState = STATE_PAUSED;
-                    long currentLap = (System.currentTimeMillis() - startTimes.get(startTimes.size()));
-                    totalElapsed += currentLap;
-                    runningTimes.add(currentLap);
+                    long currentLap = (System.currentTimeMillis() - job.getLastStartTime());
+                    job.addRunningTimes(currentLap);
                 }
             }
         }
@@ -137,6 +132,17 @@ public class TimeService extends Service {
                 instance = new TimeContainer();
             }
             return instance;
+        }
+
+        public void saveJob() {
+            if(currentState == STATE_RUNNING){
+                pause();
+            }
+        }
+
+        public void loadJob(Job job) {
+            this.job = job;
+
         }
 
     }

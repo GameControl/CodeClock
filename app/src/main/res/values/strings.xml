@@ -10,5 +10,14 @@
     <string name="title_activity_job">job</string>
     <string name="mark_finished">Mark Complete</string>
     <string name="title_activity_project">ProjectActivity</string>
+    <string name="title_activity_create_project">CreateProjectActivity</string>
+    <string name="title_activity_create_job">CreateJobActivity</string>
+    <string name="estimate_hint">Pick an estimate...</string>
+    <string name="name_hint">Insert name...</string>
+    <string name="description_hint">Insert description...</string>
+    <string name="plus">+</string>
+    <string name="colon">:</string>
+    <string name="zero_time">00:00</string>
+    <string name="title_activity_service_start">ServiceStartActivity</string>
 
 </resources>

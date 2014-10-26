@@ -15,7 +15,8 @@ import java.util.ArrayList;
 
 
 public class ProjectActivity extends Activity {
-    public final static String EXTRA_MESSAGE = "org.gamecontrol.codeclock.MESSAGE";
+    public final static String EXTRA_PROJECT_NAME = "org.gamecontrol.codeclock.PROJECT_NAME";
+    public final static String EXTRA_JOB_NAME = "org.gamecontrol.codeclock.JOB_NAME";
     private String projectName = "";
 
     private ArrayList<String> getJobs(){
@@ -41,8 +42,8 @@ public class ProjectActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 //Toast.makeText(ProjectActivity.this, "" + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ProjectActivity.this, JobActivity.class);
-                String message = "" + position;
-                intent.putExtra(EXTRA_MESSAGE, message);
+                intent.putExtra(EXTRA_PROJECT_NAME, projectName);
+                intent.putExtra(EXTRA_JOB_NAME, "" + position);
                 startActivity(intent);
             }
         });
@@ -73,5 +74,11 @@ public class ProjectActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void createJob(View view){
+        Intent intent = new Intent(ProjectActivity.this, CreateJobActivity.class);
+        startActivity(intent);
+
     }
 }

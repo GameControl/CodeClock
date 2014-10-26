@@ -11,7 +11,7 @@
         android:layout_alignParentBottom="true"
         android:textSize="40dp"
         android:text="+"
-        android:onClick="createProject" />
+        android:onClick="createJob" />
 
     <LinearLayout
         android:layout_above="@+id/createJobButton"
