@@ -1,31 +1,89 @@
 package org.gamecontrol.codeclock;
 
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.UUID;
 
 
 public class HomeActivity extends Activity {
-    public final static String EXTRA_MESSAGE = "org.gamecontrol.codeclock.MESSAGE";
-    private ArrayList<String> getProjects(){
-        ArrayList<String> output = new ArrayList<String>();
-        for(int i=0; i < 20; i++){
-            output.add("Project " + i);
+
+    public final static String TAG = "org.gamecontrol.codeclock";
+    public final static String PROJECT_UUID = "org.gamecontrol.codeclock.PROJECT_UUID";
+    public final static String PROJECT_NAME = "org.gamecontrol.codeclock.PROJECT_NAME";
+
+    private static ArrayList<String> fileNames;
+    private static ArrayList<String> projectNames;
+
+    private void getProjects(){
+        fileNames = new ArrayList<String>();
+        projectNames = new ArrayList<String>();
+        try {
+            Log.d(HomeActivity.TAG, "Reading in projects");
+            InputStream in = this.openFileInput("home.json");
+            InputStreamReader streamReader = new InputStreamReader(in);
+            BufferedReader reader = new BufferedReader(streamReader);
+            String read = reader.readLine();
+
+            StringBuilder sb = new StringBuilder();
+            while (read != null) {
+                //System.out.println(read);
+                sb.append(read);
+                read = reader.readLine();
+            }
+            JSONObject homeJSON = new JSONObject(sb.toString());
+            JSONArray names = homeJSON.names();
+            for(int i = 0; i < names.length(); i++){
+                projectNames.add(names.getString(i));
+                fileNames.add(homeJSON.getString(names.getString(i)));
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
-        return output;
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        //TODO refresh list
+        GridView gridview = (GridView) findViewById(R.id.projectGridView);
+        getProjects();
+        gridview.setAdapter(new ProjectAdapter(this, projectNames));
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                //Toast.makeText(HomeActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
+                intent.putExtra(PROJECT_UUID, fileNames.get(position));
+                intent.putExtra(PROJECT_NAME, projectNames.get(position));
+
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -33,23 +91,27 @@ public class HomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        GridView gridview = (GridView) findViewById(R.id.projectGridView);
-
-        gridview.setAdapter(new ProjectAdapter(this, getProjects()));
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                //Toast.makeText(HomeActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, "" + position);
-                startActivity(intent);
+        Writer writer = null;
+        try {
+            File file = this.getFileStreamPath("home.json");
+            if (!file.exists()) {
+                JSONObject empty = new JSONObject();
+                Log.d(HomeActivity.TAG, "INIT home.json :" + empty.toString());
+                OutputStream out = this.openFileOutput("home.json", Context.MODE_PRIVATE);
+                writer = new OutputStreamWriter(out);
+                writer.write(empty.toString());
             }
-        });
-
-//        if (savedInstanceState == null) {
-//            getFragmentManager().beginTransaction()
-//                    .add(R.id.container, new PlaceholderFragment())
-//                    .commit();
-//        }
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            if(writer != null) {
+                try {
+                    writer.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -92,4 +154,52 @@ public class HomeActivity extends Activity {
             return rootView;
         }
     }
+
+    public void testProjectSave() {
+        // Make dummy projects and jobs
+        Project testProject = makeDummyProject();
+
+        CodeClockJSONSerializer testSerializer = new CodeClockJSONSerializer(this);
+        try {
+            testSerializer.saveProject(testProject, testProject.getUuid().toString() + ".json");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Project makeDummyProject() {
+        Project dummyProject = new Project();
+
+        dummyProject.setUuid(UUID.randomUUID());
+
+        ArrayList<Job> jobs = new ArrayList<Job>();
+        jobs.add(makeDummyJob(dummyProject.getUuid()));
+        jobs.add(makeDummyJob(dummyProject.getUuid()));
+        jobs.add(makeDummyJob(dummyProject.getUuid()));
+        dummyProject.setJobs(jobs);
+
+        ArrayList<String> tags = new ArrayList<String>(Arrays.asList("Peace", "has", "sapped", "your", "strength."));
+        dummyProject.setTags(tags);
+
+        dummyProject.setNotes("Victory has defeated you.");
+
+
+
+        return dummyProject;
+    }
+
+    public Job makeDummyJob(UUID projectUUID) {
+        Job dummyJob = new Job(UUID.randomUUID(), projectUUID, "", 1, null);
+
+        dummyJob.setName("JobName" + Math.round(Math.random()*10));
+        dummyJob.setEstimate(Math.round(Math.random() * 100));
+        dummyJob.setNotes("Enter notes here...");
+        ArrayList<String> tags = new ArrayList<String>(Arrays.asList("your", "spirit", "or", "your body!"));
+        dummyJob.setTags(tags);
+
+        return dummyJob;
+    }
 }
+

@@ -34,7 +34,7 @@ public class ProjectActivity extends Activity {
 
         // Get the Intent from HomeActivity
         Intent intent = getIntent();
-        projectName = intent.getStringExtra(HomeActivity.EXTRA_MESSAGE);
+        projectName = intent.getStringExtra(HomeActivity.PROJECT_NAME);
 
         ListView listView = (ListView) findViewById(R.id.jobListView);
         listView.setAdapter(new JobAdapter(this, getJobs()));
