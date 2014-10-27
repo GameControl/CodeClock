@@ -8,11 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -64,6 +64,12 @@ public class CreateProjectActivity extends Activity {
             UUID projectUUID = UUID.randomUUID();
             String projectName = ((EditText) findViewById(R.id.projectName)).getText().toString();
 
+            if (projectName.equals("")) {
+                Toast.makeText(this, "Please enter a project name.", Toast.LENGTH_SHORT).show();
+                clicked = false;
+                return;
+            }
+
             Writer writer = null;
             try {
                 Log.d(HomeActivity.TAG, "Beginning file IO");
@@ -78,14 +84,32 @@ public class CreateProjectActivity extends Activity {
                     sb.append(read);
                     read = reader.readLine();
                 }
+
                 JSONObject homeJSON = new JSONObject(sb.toString());
+                if (homeJSON.has(projectName)) {
+                    Toast.makeText(this, "A project with that name already exists.", Toast.LENGTH_SHORT).show();
+                    clicked = false;
+                    return;
+                }
+
                 homeJSON.put(projectName, projectUUID);
                 Log.d(HomeActivity.TAG, "Writing :" + homeJSON.toString());
                 OutputStream out = this.openFileOutput("home.json", Context.MODE_PRIVATE);
                 writer = new OutputStreamWriter(out);
                 writer.write(homeJSON.toString());
-                //TODO Check for duplicate Project Names - beta
-                //TODO write project file as well
+
+                try {
+                    writer.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Project newProj = new Project(projectUUID);
+
+                out = this.openFileOutput(projectUUID.toString() + ".json", Context.MODE_PRIVATE);
+                writer = new OutputStreamWriter(out);
+                writer.write(newProj.toJSON().toString());
+
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -14,10 +14,14 @@ public class Project {
 
     private UUID uuid;
     private ArrayList<String> tags;
-    private String notes;
-    private ArrayList<Job> jobs;
+    private String notes = "";
+    private ArrayList<String> jobs;
 
     public Project() {
+    }
+
+    public Project(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public UUID getUuid() {
@@ -44,11 +48,11 @@ public class Project {
         this.notes = notes;
     }
 
-    public ArrayList<Job> getJobs() {
+    public ArrayList<String> getJobs() {
         return jobs;
     }
 
-    public void setJobs(ArrayList<Job> jobs) {
+    public void setJobs(ArrayList<String> jobs) {
         this.jobs = jobs;
     }
 
@@ -89,9 +93,11 @@ public class Project {
 
         json.put("notes", notes);
 
+        JSONArray jobsArrayJSON = new JSONArray();
+        json.put("jobs", jobsArrayJSON);
         if (jobs != null) {
-            for (Job j : jobs)
-                json.put(j.getUUID().toString(), j.toJSON());
+            for (String j : jobs)
+                jobsArrayJSON.put(j);
         }
 
         return json;
