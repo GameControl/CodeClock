@@ -26,6 +26,11 @@
             android:layout_height="200dp">
         </FrameLayout>
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/holo_blue_light"/>
+
         <ListView
             android:id="@+id/jobListView"
             android:layout_width="fill_parent"

@@ -36,17 +36,6 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/name_hint" />
             </FrameLayout>
-
-            <EditText
-                android:id="@+id/projectDescription"
-                android:layout_width="fill_parent"
-                android:layout_height="250dp"
-                android:paddingTop="10dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:gravity="top"
-                android:background="@drawable/layout_border"
-                android:hint="@string/description_hint" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
