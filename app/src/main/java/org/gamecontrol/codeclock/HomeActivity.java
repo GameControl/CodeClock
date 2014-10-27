@@ -2,8 +2,10 @@ package org.gamecontrol.codeclock;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,8 +15,13 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
@@ -22,7 +29,9 @@ import java.util.UUID;
 
 public class HomeActivity extends Activity {
 
+    public final static String TAG = "org.gamecontrol.codeclock";
     public final static String EXTRA_MESSAGE = "org.gamecontrol.codeclock.MESSAGE";
+
     private ArrayList<String> getProjects(){
         ArrayList<String> output = new ArrayList<String>();
         for(int i=0; i < 20; i++){
@@ -32,11 +41,36 @@ public class HomeActivity extends Activity {
     }
 
     @Override
+    protected void onResume(){
+        //TODO refresh list
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        testProjectSave();
+        Writer writer = null;
+        try {
+            File file = this.getFileStreamPath("home.json");
+            if (!file.exists()) {
+                JSONObject empty = new JSONObject();
+                Log.d(HomeActivity.TAG, "INIT home.json :" + empty.toString());
+                OutputStream out = this.openFileOutput("home.json", Context.MODE_PRIVATE);
+                writer = new OutputStreamWriter(out);
+                writer.write(empty.toString());
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            if(writer != null) {
+                try {
+                    writer.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         GridView gridview = (GridView) findViewById(R.id.projectGridView);
 
