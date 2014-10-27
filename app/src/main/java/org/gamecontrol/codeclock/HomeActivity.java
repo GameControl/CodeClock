@@ -71,6 +71,10 @@ public class HomeActivity extends Activity {
     protected void onResume(){
         super.onResume();
         //TODO refresh list
+        refreshGridView();
+    }
+
+    private void refreshGridView() {
         GridView gridview = (GridView) findViewById(R.id.projectGridView);
         getProjects();
         gridview.setAdapter(new ProjectAdapter(this, projectNames));
@@ -91,6 +95,10 @@ public class HomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        initHome();
+    }
+
+    private void initHome() {
         Writer writer = null;
         try {
             File file = this.getFileStreamPath("home.json");
@@ -126,17 +134,31 @@ public class HomeActivity extends Activity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.wipe_files:
+                wipeFiles();
+                return true;
+            case R.id.action_settings:
+                //openSettings();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void createProject(View v) {
         Intent intent = new Intent(HomeActivity.this, CreateProjectActivity.class);
         startActivity(intent);
 
+    }
+
+    private void wipeFiles() {
+        String[] files = this.fileList();
+        for(String file : files) {
+            this.deleteFile(file);
+        }
+        initHome();
+        refreshGridView();
     }
 
     /**

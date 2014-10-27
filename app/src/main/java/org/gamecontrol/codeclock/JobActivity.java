@@ -26,6 +26,21 @@ public class JobActivity extends Activity{
     private Job currentJob;
     private Handler handler;
     private Timer timer;
+    private final Runnable updateTextRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateTimeText();
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        if(timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +55,7 @@ public class JobActivity extends Activity{
         jobTimer = (Button) findViewById(R.id.jobTimerButton);
         handler = new Handler();
         currentJob = createJob();
-/*        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }*/
+
     }
 
     @Override
@@ -62,7 +73,6 @@ public class JobActivity extends Activity{
             timeContainer.loadJob(currentJob);
         }
         startUpdateTimer();
-        updateTimeText();
     }
 
 
@@ -89,19 +99,22 @@ public class JobActivity extends Activity{
         startService();
         if(timeContainer.getCurrentState() == TimeService.TimeContainer.STATE_RUNNING){
             //change ring to pause
-            Button timer = (Button) findViewById(R.id.jobTimerButton);
+            Button timeButton = (Button) findViewById(R.id.jobTimerButton);
             Drawable img = view.getResources().getDrawable(R.drawable.dial_stopped);
-            timer.setBackground(img);
+            timeButton.setBackground(img);
             //pause timer
             timeContainer.pause();
             stopService();
-            timer.setText(TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
+            timer.cancel();
+            timer = null;
+            //timeButton.setText(TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
         } else {
             //change ring to running
-            Button timer = (Button) findViewById(R.id.jobTimerButton);
+            Button timeButton = (Button) findViewById(R.id.jobTimerButton);
             Drawable img = view.getResources().getDrawable(R.drawable.dial_running);
-            timer.setBackground(img);
+            timeButton.setBackground(img);
             //start timer
+            timer = new Timer();
             timeContainer.start();
         }
     }
@@ -124,15 +137,9 @@ public class JobActivity extends Activity{
 
     }
 
-    private final Runnable updateTextRunnable = new Runnable() {
-        @Override
-        public void run() {
-            updateTimeText();
-        }
-    };
 
     private void updateTimeText() {
-        jobTimer.setText(getTimeString(timeContainer.getTotalElapsed()));
+        jobTimer.setText(TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
     }
 
     public void startUpdateTimer() {
@@ -147,47 +154,6 @@ public class JobActivity extends Activity{
                 handler.post(updateTextRunnable);
             }
         }, 0, 16);
-    }
-
-    public String getTimeString(long ms) {
-        if(ms == 0) {
-            return "00:00";
-        } else {
-            long seconds = (ms / 1000) % 60;
-            long minutes = (ms / 1000) / 60;
-            long hours = minutes / 60;
-
-            StringBuilder sb = new StringBuilder();
-            if(hours > 0) {
-                sb.append(hours);
-                sb.append(':');
-            }
-            if(minutes > 0) {
-                minutes = minutes % 60;
-                if(minutes >= 10) {
-                    sb.append(minutes);
-                } else {
-                    sb.append(0);
-                    sb.append(minutes);
-                }
-            } else {
-                sb.append('0');
-                sb.append('0');
-            }
-            sb.append(':');
-            if(seconds > 0) {
-                if(seconds >= 10) {
-                    sb.append(seconds);
-                } else {
-                    sb.append(0);
-                    sb.append(seconds);
-                }
-            } else {
-                sb.append('0');
-                sb.append('0');
-            }
-            return sb.toString();
-        }
     }
 
     /**

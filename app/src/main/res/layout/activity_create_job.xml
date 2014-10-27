@@ -34,6 +34,8 @@
                     android:id="@+id/JobName"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
                     android:hint="@string/name_hint" />
             </FrameLayout>
             <TextView
