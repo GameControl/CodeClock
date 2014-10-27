@@ -78,12 +78,7 @@ public class CreateProjectActivity extends Activity {
                     sb.append(read);
                     read = reader.readLine();
                 }
-                JSONObject homeJSON;
-                if (sb.toString().length() == 0) {
-                    homeJSON = new JSONObject();
-                } else {
-                    homeJSON = new JSONObject(sb.toString());
-                }
+                JSONObject homeJSON = new JSONObject(sb.toString());
                 homeJSON.put(projectName, projectUUID);
                 Log.d(HomeActivity.TAG, "Writing :" + homeJSON.toString());
                 OutputStream out = this.openFileOutput("home.json", Context.MODE_PRIVATE);

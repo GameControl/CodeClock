@@ -14,11 +14,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -30,19 +34,56 @@ import java.util.UUID;
 public class HomeActivity extends Activity {
 
     public final static String TAG = "org.gamecontrol.codeclock";
-    public final static String EXTRA_MESSAGE = "org.gamecontrol.codeclock.MESSAGE";
+    public final static String PROJECT_UUID = "org.gamecontrol.codeclock.PROJECT_UUID";
+    public final static String PROJECT_NAME = "org.gamecontrol.codeclock.PROJECT_NAME";
 
-    private ArrayList<String> getProjects(){
-        ArrayList<String> output = new ArrayList<String>();
-        for(int i=0; i < 20; i++){
-            output.add("Project " + i);
+    private static ArrayList<String> fileNames;
+    private static ArrayList<String> projectNames;
+
+    private void getProjects(){
+        fileNames = new ArrayList<String>();
+        projectNames = new ArrayList<String>();
+        try {
+            Log.d(HomeActivity.TAG, "Reading in projects");
+            InputStream in = this.openFileInput("home.json");
+            InputStreamReader streamReader = new InputStreamReader(in);
+            BufferedReader reader = new BufferedReader(streamReader);
+            String read = reader.readLine();
+
+            StringBuilder sb = new StringBuilder();
+            while (read != null) {
+                //System.out.println(read);
+                sb.append(read);
+                read = reader.readLine();
+            }
+            JSONObject homeJSON = new JSONObject(sb.toString());
+            JSONArray names = homeJSON.names();
+            for(int i = 0; i < names.length(); i++){
+                projectNames.add(names.getString(i));
+                fileNames.add(homeJSON.getString(names.getString(i)));
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
-        return output;
     }
 
     @Override
     protected void onResume(){
+        super.onResume();
         //TODO refresh list
+        GridView gridview = (GridView) findViewById(R.id.projectGridView);
+        getProjects();
+        gridview.setAdapter(new ProjectAdapter(this, projectNames));
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                //Toast.makeText(HomeActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
+                intent.putExtra(PROJECT_UUID, fileNames.get(position));
+                intent.putExtra(PROJECT_NAME, projectNames.get(position));
+
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -72,17 +113,7 @@ public class HomeActivity extends Activity {
             }
         }
 
-        GridView gridview = (GridView) findViewById(R.id.projectGridView);
 
-        gridview.setAdapter(new ProjectAdapter(this, getProjects()));
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                //Toast.makeText(HomeActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, "" + position);
-                startActivity(intent);
-            }
-        });
 
 //        if (savedInstanceState == null) {
 //            getFragmentManager().beginTransaction()
