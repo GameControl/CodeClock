@@ -8,8 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.jjoe64.graphview.BarGraphView;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphViewSeries;
 
 import java.util.ArrayList;
 
@@ -47,6 +51,8 @@ public class ProjectActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        addGraph();
     }
 
     @Override
@@ -80,5 +86,30 @@ public class ProjectActivity extends Activity {
         Intent intent = new Intent(ProjectActivity.this, CreateJobActivity.class);
         startActivity(intent);
 
+    }
+
+    public void addGraph() {
+        // draw sin curve
+        int num = 150;
+        GraphView.GraphViewData[] data = new GraphView.GraphViewData[num];
+        double v=0;
+        for (int i=0; i<num; i++) {
+            v += 0.2;
+            data[i] = new GraphView.GraphViewData(i, Math.sin(v));
+        }
+        GraphView graphView = new BarGraphView(
+                this
+                , "GraphViewDemo"
+        );
+        // add data
+        graphView.addSeries(new GraphViewSeries(data));
+        // set view port, start=2, size=40
+        graphView.setViewPort(2, 40);
+        graphView.setScrollable(true);
+        // optional - activate scaling / zooming
+        graphView.setScalable(true);
+
+        FrameLayout layout = (FrameLayout) findViewById(R.id.projectDataView);
+        layout.addView(graphView);
     }
 }

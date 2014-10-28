@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,7 +66,9 @@ public class CreateProjectActivity extends Activity {
             String projectName = ((EditText) findViewById(R.id.projectName)).getText().toString();
 
             if (projectName.equals("")) {
-                Toast.makeText(this, "Please enter a project name.", Toast.LENGTH_SHORT).show();
+                Toast toast = Toast.makeText(this, "Please enter a project name.", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP, 0, 250);
+                toast.show();
                 clicked = false;
                 return;
             }
@@ -87,7 +90,9 @@ public class CreateProjectActivity extends Activity {
 
                 JSONObject homeJSON = new JSONObject(sb.toString());
                 if (homeJSON.has(projectName)) {
-                    Toast.makeText(this, "A project with that name already exists.", Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(this, "A project with that name already exists.", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP, 0, 250);
+                    toast.show();
                     clicked = false;
                     return;
                 }
