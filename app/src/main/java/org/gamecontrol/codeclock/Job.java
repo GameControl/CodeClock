@@ -10,9 +10,18 @@ import java.util.UUID;
  * Created by illwrath on 10/25/14.
  */
 public class Job {
+    public final static String UUID = "uuid";
+    public final static String PROJECT_UUID = "projectUUID";
+    public final static String NAME = "name";
+    public final static String ESTIMATE = "estimate";
+    public final static String NOTES = "notes";
+    public final static String TAGS = "tags";
+    public final static String START_TIMES = "startTimes";
+    public final static String RUNNING_TIMES = "runningTimes";
+    public final static String ELAPSED = "elapsed";
 
     private UUID uuid;
-    private UUID projectUUID;
+    private String projectUUID;
     private String name;
     private long estimate;
     private String notes;
@@ -21,7 +30,7 @@ public class Job {
     private ArrayList<Long> runningTimes;
     private long elapsed;
 
-    public Job(UUID myUUID, UUID myProjectUUID, String name, long estimate, ArrayList<String> tags) {
+    public Job(UUID myUUID, String myProjectUUID, String name, long estimate, ArrayList<String> tags) {
         this.uuid = myUUID;
         this.projectUUID = myProjectUUID;
         this.name = name;
@@ -37,7 +46,7 @@ public class Job {
         return uuid;
     }
 
-    public UUID getProjectUUID() {
+    public String getProjectUUID() {
         return projectUUID;
     }
 
@@ -83,6 +92,26 @@ public class Job {
         this.tags = tags;
     }
 
+    public ArrayList<Long> getStartTimes() {
+        return startTimes;
+    }
+
+    public void setStartTimes(ArrayList<Long> startTimes) {
+        this.startTimes = startTimes;
+    }
+
+    public ArrayList<Long> getRunningTimes() {
+        return runningTimes;
+    }
+
+    public void setRunningTimes(ArrayList<Long> runningTimes) {
+        this.runningTimes = runningTimes;
+    }
+
+    public void setElapsed(long elapsed) {
+        this.elapsed = elapsed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -125,15 +154,31 @@ public class Job {
 
     public JSONObject toJSON() throws JSONException{
         JSONObject json = new JSONObject();
-        json.put("name", name);
-        json.put("estimate", estimate);
-        json.put("notes", notes);
+
+        json.put(NAME, name);
+        json.put(ESTIMATE, estimate);
+        json.put(NOTES, notes);
+        json.put(ELAPSED, elapsed);
 
         JSONArray tagsArrayJSON = new JSONArray();
-        json.put("tags", tagsArrayJSON);
+        json.put(TAGS, tagsArrayJSON);
         if (tags != null) {
             for (String t : tags)
                 tagsArrayJSON.put(t);
+        }
+
+        JSONArray startTimesArrayJSON = new JSONArray();
+        json.put(START_TIMES, startTimesArrayJSON);
+        if (startTimes != null) {
+            for (Long t : startTimes)
+                startTimesArrayJSON.put(t);
+        }
+
+        JSONArray runningTimesArrayJSON = new JSONArray();
+        json.put(RUNNING_TIMES, runningTimesArrayJSON);
+        if (runningTimes != null) {
+            for (Long t : runningTimes)
+                runningTimesArrayJSON.put(t);
         }
 
         return json;

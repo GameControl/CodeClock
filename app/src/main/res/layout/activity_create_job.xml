@@ -13,7 +13,7 @@
         android:layout_alignParentBottom="true"
         android:textSize="40sp"
         android:text="@string/plus"
-        android:onClick="initJob" />
+        android:onClick="initNewJob" />
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -31,7 +31,7 @@
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp">
                 <EditText
-                    android:id="@+id/JobName"
+                    android:id="@+id/jobName"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"

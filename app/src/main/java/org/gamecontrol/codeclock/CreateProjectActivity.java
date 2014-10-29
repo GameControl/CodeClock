@@ -1,5 +1,6 @@
 package org.gamecontrol.codeclock;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ import java.util.UUID;
 public class CreateProjectActivity extends Activity {
 
     private static boolean clicked = false;
-    public static final String TAG = HomeActivity.TAG + ".CreateProjectActivity";
+    public static final String TAG = "org.gamecontrol.codeclock.CreateProjectActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,12 @@ public class CreateProjectActivity extends Activity {
         setContentView(R.layout.activity_create_project);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle("New Project");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -59,7 +66,7 @@ public class CreateProjectActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void initProject(View view) {
+    public void initNewProject(View view) {
         if(!clicked) {
             clicked = true;
             UUID projectUUID = UUID.randomUUID();
@@ -75,7 +82,7 @@ public class CreateProjectActivity extends Activity {
 
             Writer writer = null;
             try {
-                Log.d(HomeActivity.TAG, "Beginning file IO");
+                Log.d(TAG, "Beginning file IO");
                 InputStream in = this.openFileInput("home.json");
                 InputStreamReader streamReader = new InputStreamReader(in);
                 BufferedReader reader = new BufferedReader(streamReader);
@@ -98,7 +105,7 @@ public class CreateProjectActivity extends Activity {
                 }
 
                 homeJSON.put(projectName, projectUUID);
-                Log.d(HomeActivity.TAG, "Writing :" + homeJSON.toString());
+                Log.d(TAG, "Writing :" + homeJSON.toString());
                 OutputStream out = this.openFileOutput("home.json", Context.MODE_PRIVATE);
                 writer = new OutputStreamWriter(out);
                 writer.write(homeJSON.toString());
@@ -114,7 +121,7 @@ public class CreateProjectActivity extends Activity {
                 out = this.openFileOutput(projectUUID.toString() + ".json", Context.MODE_PRIVATE);
                 writer = new OutputStreamWriter(out);
                 writer.write(newProj.toJSON().toString());
-
+                Log.d(TAG, "Writing Project: " + newProj.getUuid().toString());
 
             } catch (Exception e) {
                 e.printStackTrace();

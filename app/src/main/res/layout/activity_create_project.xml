@@ -13,7 +13,7 @@
         android:layout_alignParentBottom="true"
         android:textSize="40sp"
         android:text="@string/plus"
-        android:onClick="initProject" />
+        android:onClick="initNewProject" />
 
     <ScrollView
         android:layout_width="fill_parent"

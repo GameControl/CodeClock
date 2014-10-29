@@ -12,14 +12,32 @@ import java.util.UUID;
  */
 public class Project {
 
+    public final static String UUID = "uuid";
+    public final static String TAGS = "tags";
+    public final static String NOTES = "notes";
+    public final static String JOB_UUIDS = "jobUUIDs";
+    public final static String JOB_NAMES = "jobNames";
+
     private UUID uuid;
     private ArrayList<String> tags;
     private String notes = "";
-    private ArrayList<String> jobs;
+    private ArrayList<String> jobUUIDs;
+    private ArrayList<String> jobNames;
 
     public Project() {
+        tags = new ArrayList<String>();
+        jobUUIDs = new ArrayList<String>();
+        jobNames = new ArrayList<String>();
     }
 
+    public Project(UUID uuid, ArrayList<String> tags, String notes, ArrayList<String> jobUUIDs, ArrayList<String> jobNames) {
+        this.uuid = uuid;
+        this.tags = tags;
+        this.notes = notes;
+        this.jobUUIDs = jobUUIDs;
+        this.jobNames =  jobNames;
+
+    }
     public Project(UUID uuid) {
         this.uuid = uuid;
     }
@@ -48,12 +66,20 @@ public class Project {
         this.notes = notes;
     }
 
-    public ArrayList<String> getJobs() {
-        return jobs;
+    public ArrayList<String> getJobUUIDs() {
+        return jobUUIDs;
     }
 
-    public void setJobs(ArrayList<String> jobs) {
-        this.jobs = jobs;
+    public void setJobUUIDs(ArrayList<String> jobUUIDs) {
+        this.jobUUIDs = jobUUIDs;
+    }
+
+    public ArrayList<String> getJobNames() {
+        return jobNames;
+    }
+
+    public void setJobNames(ArrayList<String> jobNames) {
+        this.jobNames = jobNames;
     }
 
     @Override
@@ -63,7 +89,7 @@ public class Project {
 
         Project project = (Project) o;
 
-        if (jobs != null ? !jobs.equals(project.jobs) : project.jobs != null) return false;
+        if (jobUUIDs != null ? !jobUUIDs.equals(project.jobUUIDs) : project.jobUUIDs != null) return false;
         if (notes != null ? !notes.equals(project.notes) : project.notes != null) return false;
         if (tags != null ? !tags.equals(project.tags) : project.tags != null) return false;
         if (uuid != null ? !uuid.equals(project.uuid) : project.uuid != null) return false;
@@ -76,28 +102,35 @@ public class Project {
         int result = uuid != null ? uuid.hashCode() : 0;
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         result = 31 * result + (notes != null ? notes.hashCode() : 0);
-        result = 31 * result + (jobs != null ? jobs.hashCode() : 0);
+        result = 31 * result + (jobUUIDs != null ? jobUUIDs.hashCode() : 0);
         return result;
     }
 
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("uuid", uuid.toString());
+        json.put(UUID, uuid.toString());
 
         JSONArray tagsArrayJSON = new JSONArray();
-        json.put("tags", tagsArrayJSON);
+        json.put(TAGS, tagsArrayJSON);
         if (tags != null) {
             for (String t : tags)
                 tagsArrayJSON.put(t);
         }
 
-        json.put("notes", notes);
+        json.put(NOTES, notes);
 
         JSONArray jobsArrayJSON = new JSONArray();
-        json.put("jobs", jobsArrayJSON);
-        if (jobs != null) {
-            for (String j : jobs)
+        json.put(JOB_UUIDS, jobsArrayJSON);
+        if (jobUUIDs != null) {
+            for (String j : jobUUIDs)
                 jobsArrayJSON.put(j);
+        }
+
+        JSONArray jobNamesArrayJSON = new JSONArray();
+        json.put(JOB_NAMES, jobNamesArrayJSON);
+        if (jobNames != null) {
+            for (String j : jobNames)
+                jobNamesArrayJSON.put(j);
         }
 
         return json;

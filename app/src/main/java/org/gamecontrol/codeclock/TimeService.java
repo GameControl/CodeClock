@@ -142,7 +142,6 @@ public class TimeService extends Service {
 
         public void loadJob(Job job) {
             this.job = job;
-
         }
 
     }

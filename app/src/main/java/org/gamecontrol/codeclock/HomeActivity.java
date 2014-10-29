@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class HomeActivity extends Activity {
 
-    public final static String TAG = "org.gamecontrol.codeclock";
+    private final static String TAG = "org.gamecontrol.codeclock.HomeActivity";
     public final static String PROJECT_UUID = "org.gamecontrol.codeclock.PROJECT_UUID";
     public final static String PROJECT_NAME = "org.gamecontrol.codeclock.PROJECT_NAME";
 
@@ -80,7 +80,6 @@ public class HomeActivity extends Activity {
                 Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
                 intent.putExtra(PROJECT_UUID, fileNames.get(position));
                 intent.putExtra(PROJECT_NAME, projectNames.get(position));
-
                 startActivity(intent);
             }
         });

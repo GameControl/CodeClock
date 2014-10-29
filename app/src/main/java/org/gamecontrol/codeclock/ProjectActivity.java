@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,20 +16,80 @@ import com.jjoe64.graphview.BarGraphView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphViewSeries;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 public class ProjectActivity extends Activity {
-    public final static String EXTRA_PROJECT_NAME = "org.gamecontrol.codeclock.PROJECT_NAME";
-    public final static String EXTRA_JOB_NAME = "org.gamecontrol.codeclock.JOB_NAME";
-    private String projectName = "";
 
-    private ArrayList<String> getJobs(){
-        ArrayList<String> output = new ArrayList<String>();
-        for(int i=0; i < 20; i++){
-            output.add("Job " + i);
+    private final static String TAG = "org.gamecontrol.codeclock.ProjectActivity";
+    public final static String JOB_UUID = "org.gamecontrol.codeclock.JOB_UUID";
+    public final static String JOB_NAME = "org.gamecontrol.codeclock.JOB_NAME";
+    private final static String JOB_KEY = "jobs";
+
+    private String projectName;
+    private String projectUUID;
+
+    private Project project;
+
+    private void initProject(){
+        try {
+            Log.d(TAG, "Reading a project in initProject()");
+            Log.d(TAG, "Opening file:" + projectUUID + ".json");
+            InputStream in = this.openFileInput(projectUUID + ".json");
+            InputStreamReader streamReader = new InputStreamReader(in);
+            BufferedReader reader = new BufferedReader(streamReader);
+            String read = reader.readLine();
+            Log.d(TAG, "Finished opening file and creating reader");
+
+            StringBuilder sb = new StringBuilder();
+            while (read != null) {
+                //System.out.println(read);
+                sb.append(read);
+                read = reader.readLine();
+            }
+            Log.d(TAG, "Read: " + sb.toString());
+
+            JSONObject projectJSON = new JSONObject(sb.toString()); //(JSONObject) new JSONTokener(sb.toString()).nextValue();
+            //create the project
+
+            Log.d(TAG, "After projectJSON init");
+
+            JSONArray tagsJSON = projectJSON.getJSONArray(Project.TAGS);
+            ArrayList<String> tags = new ArrayList<String>();
+            for(int i = 0; i < tagsJSON.length(); i++){
+                tags.add(tagsJSON.getString(i));
+            }
+
+            JSONArray jobUUIDJSON = projectJSON.getJSONArray(Project.JOB_UUIDS);
+            ArrayList<String> jobUUIDs = new ArrayList<String>();
+            for(int i = 0; i < jobUUIDJSON.length(); i++){
+                jobUUIDs.add(jobUUIDJSON.getString(i));
+            }
+
+            JSONArray jobNameJSON = projectJSON.getJSONArray(Project.JOB_NAMES);
+            ArrayList<String> jobNames = new ArrayList<String>();
+            for(int i = 0; i < jobNameJSON.length(); i++){
+                jobNames.add(jobNameJSON.getString(i));
+            }
+
+            project = new Project(UUID.fromString(projectUUID), tags, projectJSON.getString(Project.NOTES), jobUUIDs, jobNames);
+            ActionBar actionBar = getActionBar();
+            actionBar.setTitle(projectName);
+
+        } catch (Exception e){
+            e.printStackTrace();
         }
-        return output;
+        if(project == null) {
+            project = new Project(UUID.fromString(projectUUID));
+        }
     }
 
     @Override
@@ -39,19 +100,7 @@ public class ProjectActivity extends Activity {
         // Get the Intent from HomeActivity
         Intent intent = getIntent();
         projectName = intent.getStringExtra(HomeActivity.PROJECT_NAME);
-
-        ListView listView = (ListView) findViewById(R.id.jobListView);
-        listView.setAdapter(new JobAdapter(this, getJobs()));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                //Toast.makeText(ProjectActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(ProjectActivity.this, JobActivity.class);
-                intent.putExtra(EXTRA_PROJECT_NAME, projectName);
-                intent.putExtra(EXTRA_JOB_NAME, "" + position);
-                startActivity(intent);
-            }
-        });
-
+        projectUUID = intent.getStringExtra(HomeActivity.PROJECT_UUID);
         addGraph();
     }
 
@@ -59,8 +108,8 @@ public class ProjectActivity extends Activity {
     public void onResume() {
         super.onResume();  // Always call the superclass method first
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setTitle(projectName);
+        initProject();
+        refreshListView();
     }
 
     @Override
@@ -84,8 +133,27 @@ public class ProjectActivity extends Activity {
 
     public void createJob(View view){
         Intent intent = new Intent(ProjectActivity.this, CreateJobActivity.class);
+        intent.putExtra(HomeActivity.PROJECT_UUID, projectUUID);
+        intent.putExtra(HomeActivity.PROJECT_NAME, projectName);
         startActivity(intent);
+    }
 
+    private void refreshListView() {
+        Log.d(TAG, project.getJobNames().toString());
+        ListView listView = (ListView) findViewById(R.id.jobListView);
+        listView.setAdapter(new JobAdapter(this, project.getJobNames()));
+        Log.d(TAG, project.getJobNames().toString());
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                //Toast.makeText(ProjectActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ProjectActivity.this, JobActivity.class);
+                intent.putExtra(HomeActivity.PROJECT_NAME, projectName);
+                intent.putExtra(HomeActivity.PROJECT_UUID, projectUUID);
+                intent.putExtra(ProjectActivity.JOB_NAME, project.getJobNames().get(position));
+                intent.putExtra(ProjectActivity.JOB_UUID, project.getJobUUIDs().get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     public void addGraph() {
