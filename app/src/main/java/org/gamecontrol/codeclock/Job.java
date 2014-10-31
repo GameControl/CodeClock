@@ -10,6 +10,11 @@ import java.util.UUID;
  * Created by illwrath on 10/25/14.
  */
 public class Job {
+
+    public static final int STATE_INIT = 0;
+    public static final int STATE_PAUSED = 1;
+    public static final int STATE_RUNNING = 2;
+
     public final static String UUID = "uuid";
     public final static String PROJECT_UUID = "projectUUID";
     public final static String NAME = "name";
@@ -19,6 +24,7 @@ public class Job {
     public final static String START_TIMES = "startTimes";
     public final static String RUNNING_TIMES = "runningTimes";
     public final static String ELAPSED = "elapsed";
+    public final static String STATE = "state";
 
     private UUID uuid;
     private String projectUUID;
@@ -29,6 +35,7 @@ public class Job {
     private ArrayList<Long> startTimes;
     private ArrayList<Long> runningTimes;
     private long elapsed;
+    private int currentState;
 
     public Job(UUID myUUID, String myProjectUUID, String name, long estimate, ArrayList<String> tags) {
         this.uuid = myUUID;
@@ -40,6 +47,7 @@ public class Job {
         startTimes = new ArrayList<Long>();
         runningTimes = new ArrayList<Long>();
         elapsed = 0;
+        currentState = STATE_INIT;
     }
 
     public UUID getUUID() {
@@ -112,6 +120,14 @@ public class Job {
         this.elapsed = elapsed;
     }
 
+    public int getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(int currentState) {
+        this.currentState = currentState;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -159,6 +175,7 @@ public class Job {
         json.put(ESTIMATE, estimate);
         json.put(NOTES, notes);
         json.put(ELAPSED, elapsed);
+        json.put(STATE, currentState);
 
         JSONArray tagsArrayJSON = new JSONArray();
         json.put(TAGS, tagsArrayJSON);

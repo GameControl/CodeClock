@@ -4,8 +4,13 @@ import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -32,5 +37,25 @@ public class CodeClockJSONSerializer {
             if (writer != null)
                 writer.close();
         }
+    }
+
+    public static JSONObject fileToJSON(InputStream in) {
+        InputStreamReader streamReader = new InputStreamReader(in);
+        BufferedReader reader = new BufferedReader(streamReader);
+        try {
+            String read = reader.readLine();
+            StringBuilder sb = new StringBuilder();
+            while (read != null) {
+                sb.append(read);
+                read = reader.readLine();
+            }
+
+            return (JSONObject) new JSONTokener(sb.toString()).nextValue();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

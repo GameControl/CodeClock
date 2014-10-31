@@ -72,19 +72,10 @@ public class TimeService extends Service {
 
     public static class TimeContainer {
 
-        public static final int STATE_INIT = 0;
-        public static final int STATE_PAUSED = 1;
-        public static final int STATE_RUNNING = 2;
-
-        private int currentState;
         private Job job;
         private static TimeContainer instance;
 
         private final Object mSynchronizedObject = new Object();
-
-        private TimeContainer() {
-            currentState = STATE_INIT;
-        }
 
         public UUID getJobUUID() {
             if(job != null)
@@ -94,33 +85,33 @@ public class TimeService extends Service {
         }
 
         public int getCurrentState() {
-            return currentState;
+            return job.getCurrentState();
         }
 
         public void setCurrentState(int currentState) {
-            this.currentState = currentState;
+            job.setCurrentState(currentState);
         }
 
         public long getTotalElapsed() {
-            if(currentState == STATE_RUNNING){
+            if(job.getCurrentState() == Job.STATE_RUNNING){
                 return job.getElapsed() + (System.currentTimeMillis() - job.getLastStartTime());
             } else
                 return job.getElapsed();
         }
 
         public void start() {
-            if(currentState != STATE_RUNNING) {
+            if(job.getCurrentState() != Job.STATE_RUNNING) {
                 synchronized (mSynchronizedObject) {
                     job.addStartTime(System.currentTimeMillis());
-                    currentState = STATE_RUNNING;
+                    job.setCurrentState(Job.STATE_RUNNING);
                 }
             }
         }
 
         public void pause() {
-            if(currentState == STATE_RUNNING) {
+            if(job.getCurrentState() != Job.STATE_PAUSED) {
                 synchronized (mSynchronizedObject) {
-                    currentState = STATE_PAUSED;
+                    job.setCurrentState(Job.STATE_PAUSED);
                     long currentLap = (System.currentTimeMillis() - job.getLastStartTime());
                     job.addRunningTimes(currentLap);
                 }
@@ -135,8 +126,10 @@ public class TimeService extends Service {
         }
 
         public void saveJob() {
-            if(currentState == STATE_RUNNING){
-                pause();
+            if(job != null) {
+                if (job.getCurrentState() == Job.STATE_RUNNING) {
+                    pause();
+                }
             }
         }
 

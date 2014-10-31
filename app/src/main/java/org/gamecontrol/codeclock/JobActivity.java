@@ -82,6 +82,7 @@ public class JobActivity extends Activity{
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
+
         initJob();
 
         ActionBar actionBar = getActionBar();
@@ -94,6 +95,12 @@ public class JobActivity extends Activity{
         if(timeContainer.getJobUUID() != currentJob.getUUID()) {
             timeContainer.saveJob();
             timeContainer.loadJob(currentJob);
+        }
+
+        if(currentJob.getCurrentState() == Job.STATE_RUNNING){
+            Button timeButton = (Button) findViewById(R.id.jobTimerButton);
+            Drawable img = this.getResources().getDrawable(R.drawable.dial_running);
+            timeButton.setBackground(img);
         }
         updateTimeText();
         startUpdateTimer();
@@ -121,7 +128,7 @@ public class JobActivity extends Activity{
 
     public void toggleTimer(View view) {
         startService();
-        if(timeContainer.getCurrentState() == TimeService.TimeContainer.STATE_RUNNING){
+        if(timeContainer.getCurrentState() == Job.STATE_RUNNING){
             //change ring to pause
             Button timeButton = (Button) findViewById(R.id.jobTimerButton);
             Drawable img = view.getResources().getDrawable(R.drawable.dial_stopped);
@@ -131,16 +138,6 @@ public class JobActivity extends Activity{
             stopService();
             timer.cancel();
             timer = null;
-            try {
-                OutputStream out = this.openFileOutput(jobUUID + ".json", Context.MODE_PRIVATE);
-                OutputStreamWriter writer = new OutputStreamWriter(out);
-                writer.write(currentJob.toJSON().toString());
-                Log.d(TAG, "Writing Job: " + currentJob.getUUID());
-                //timeButton.setText(TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
-                writer.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         } else {
             //change ring to running
             Button timeButton = (Button) findViewById(R.id.jobTimerButton);
@@ -149,6 +146,16 @@ public class JobActivity extends Activity{
             //start timer
             timer = new Timer();
             timeContainer.start();
+        }
+        try {
+            OutputStream out = this.openFileOutput(jobUUID + ".json", Context.MODE_PRIVATE);
+            OutputStreamWriter writer = new OutputStreamWriter(out);
+            writer.write(currentJob.toJSON().toString());
+            Log.d(TAG, "Writing Job: " + currentJob.getUUID());
+            //timeButton.setText(TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -164,7 +171,7 @@ public class JobActivity extends Activity{
 
     private void initJob() {
         try {
-            Log.d(TAG, "Reading a job file in initJob()");
+            /*Log.d(TAG, "Reading a job file in initJob()");
             Log.d(TAG, "Opening file:" + jobUUID + ".json");
             InputStream in = this.openFileInput(jobUUID + ".json");
             InputStreamReader streamReader = new InputStreamReader(in);
@@ -180,11 +187,15 @@ public class JobActivity extends Activity{
             }
             Log.d(TAG, "Read: " + sb.toString());
 
-            JSONObject jobJSON = (JSONObject) new JSONTokener(sb.toString()).nextValue();
+            JSONObject jobJSON = (JSONObject) new JSONTokener(sb.toString()).nextValue();*/
+
+            InputStream in = this.openFileInput(jobUUID + ".json");
+            JSONObject jobJSON = CodeClockJSONSerializer.fileToJSON(in);
 
             currentJob = new Job(UUID.fromString(jobUUID), parentProjectUUID, jobName, 0, null);
             Log.d(TAG, "new Job");
 
+            currentJob.setCurrentState(jobJSON.getInt(Job.STATE));
             ArrayList<Long> startTimesArray = new ArrayList<Long>();
             JSONArray startTimesJSON = jobJSON.getJSONArray(Job.START_TIMES);
             if (startTimesJSON != null) {
