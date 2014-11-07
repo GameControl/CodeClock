@@ -171,23 +171,8 @@ public class JobActivity extends Activity{
 
     private void initJob() {
         try {
-            /*Log.d(TAG, "Reading a job file in initJob()");
+            Log.d(TAG, "Reading a job file in initJob()");
             Log.d(TAG, "Opening file:" + jobUUID + ".json");
-            InputStream in = this.openFileInput(jobUUID + ".json");
-            InputStreamReader streamReader = new InputStreamReader(in);
-            BufferedReader reader = new BufferedReader(streamReader);
-            String read = reader.readLine();
-            Log.d(TAG, "Finished opening file and creating reader");
-
-            StringBuilder sb = new StringBuilder();
-            while (read != null) {
-                //System.out.println(read);
-                sb.append(read);
-                read = reader.readLine();
-            }
-            Log.d(TAG, "Read: " + sb.toString());
-
-            JSONObject jobJSON = (JSONObject) new JSONTokener(sb.toString()).nextValue();*/
 
             InputStream in = this.openFileInput(jobUUID + ".json");
             JSONObject jobJSON = CodeClockJSONSerializer.fileToJSON(in);
@@ -196,24 +181,14 @@ public class JobActivity extends Activity{
             Log.d(TAG, "new Job");
 
             currentJob.setCurrentState(jobJSON.getInt(Job.STATE));
-            ArrayList<Long> startTimesArray = new ArrayList<Long>();
+
             JSONArray startTimesJSON = jobJSON.getJSONArray(Job.START_TIMES);
-            if (startTimesJSON != null) {
-                for (int i = 0; i < startTimesJSON.length(); i++) {
-                    startTimesArray.add((Long) startTimesJSON.get(i));
-                }
-            }
+            ArrayList<Long> startTimesArray = CodeClockJSONSerializer.JSONArrayToArrayListLong(startTimesJSON);
             currentJob.setStartTimes(startTimesArray);
             Log.d(TAG, "set start times" + currentJob.getStartTimes().toString());
 
-            ArrayList<Long> runningTimesArray = new ArrayList<Long>();
             JSONArray runningTimesJSON = jobJSON.getJSONArray(Job.RUNNING_TIMES);
-            Log.d(TAG, "before running times loop");
-            if (runningTimesJSON != null) {
-                for (int i = 0; i < runningTimesJSON.length(); i++) {
-                    runningTimesArray.add(Long.valueOf(runningTimesJSON.get(i).toString()));
-                }
-            }
+            ArrayList<Long> runningTimesArray = CodeClockJSONSerializer.JSONArrayToArrayListLong(runningTimesJSON);
             currentJob.setRunningTimes(runningTimesArray);
             Log.d(TAG, "set running times" + currentJob.getRunningTimes().toString());
 
@@ -222,6 +197,7 @@ public class JobActivity extends Activity{
 
 
         } catch (Exception e) {
+            Log.d(TAG, "caught exception: " + e.toString());
             e.printStackTrace();
         }
     }

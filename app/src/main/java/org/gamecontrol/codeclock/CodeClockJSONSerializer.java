@@ -3,6 +3,7 @@ package org.gamecontrol.codeclock;
 import android.content.Context;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -14,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 
 /**
  * Created by tony on 10/25/2014.
@@ -57,5 +59,20 @@ public class CodeClockJSONSerializer {
         }
 
         return null;
+    }
+
+    public static ArrayList<Long> JSONArrayToArrayListLong(JSONArray input) throws JSONException {
+        ArrayList<Long> output = new ArrayList<Long>();
+        Number entry;
+
+        if (input == null)
+            return null;
+
+        for (int i = 0; i < input.length(); i++) {
+            entry = (Number) input.get(i);
+            output.add(entry.longValue());
+        }
+
+        return output;
     }
 }
