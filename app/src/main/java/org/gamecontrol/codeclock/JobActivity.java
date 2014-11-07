@@ -35,7 +35,9 @@ import java.util.TimerTask;
 public class JobActivity extends Activity{
 
     private final static String TAG = "org.gamecontrol.codeclock.JobActivity";
+    private final Object mSynchronizedObject = new Object();
 
+    private boolean ready = false;
     private String parentProject;
     private String parentProjectUUID;
     private String jobName;
@@ -55,6 +57,7 @@ public class JobActivity extends Activity{
 
     @Override
     protected void onPause() {
+        ready = false;
         if(timer != null) {
             timer.cancel();
             timer = null;
@@ -86,7 +89,9 @@ public class JobActivity extends Activity{
         initJob();
 
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle(parentProject + " > " + currentJob.getName());
+        if(actionBar != null) {
+            actionBar.setTitle(parentProject + " > " + currentJob.getName());
+        }
 
         if(timeContainer == null)
             timeContainer = TimeService.TimeContainer.getInstance();
@@ -102,8 +107,9 @@ public class JobActivity extends Activity{
             Drawable img = this.getResources().getDrawable(R.drawable.dial_running);
             timeButton.setBackground(img);
         }
-        updateTimeText();
         startUpdateTimer();
+
+        ready = true;
     }
 
 
@@ -127,35 +133,37 @@ public class JobActivity extends Activity{
     }
 
     public void toggleTimer(View view) {
-        startService();
-        if(timeContainer.getCurrentState() == Job.STATE_RUNNING){
-            //change ring to pause
-            Button timeButton = (Button) findViewById(R.id.jobTimerButton);
-            Drawable img = view.getResources().getDrawable(R.drawable.dial_stopped);
-            timeButton.setBackground(img);
-            //pause timer
-            timeContainer.pause();
-            stopService();
-            timer.cancel();
-            timer = null;
-        } else {
-            //change ring to running
-            Button timeButton = (Button) findViewById(R.id.jobTimerButton);
-            Drawable img = view.getResources().getDrawable(R.drawable.dial_running);
-            timeButton.setBackground(img);
-            //start timer
-            timer = new Timer();
-            timeContainer.start();
-        }
-        try {
-            OutputStream out = this.openFileOutput(jobUUID + ".json", Context.MODE_PRIVATE);
-            OutputStreamWriter writer = new OutputStreamWriter(out);
-            writer.write(currentJob.toJSON().toString());
-            Log.d(TAG, "Writing Job: " + currentJob.getUUID());
-            //timeButton.setText(TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(ready){
+            synchronized (mSynchronizedObject) {
+                startService();
+                if (timeContainer.getCurrentState() == Job.STATE_RUNNING) {
+                    //change ring to pause
+                    Button timeButton = (Button) findViewById(R.id.jobTimerButton);
+                    Drawable img = view.getResources().getDrawable(R.drawable.dial_stopped);
+                    timeButton.setBackground(img);
+                    //pause timer
+                    timeContainer.pause();
+                    stopService();
+                } else {
+                    //change ring to running
+                    Button timeButton = (Button) findViewById(R.id.jobTimerButton);
+                    Drawable img = view.getResources().getDrawable(R.drawable.dial_running);
+                    timeButton.setBackground(img);
+                    //start timer
+                    timer = new Timer();
+                    timeContainer.start();
+                }
+                try {
+                    OutputStream out = this.openFileOutput(jobUUID + ".json", Context.MODE_PRIVATE);
+                    OutputStreamWriter writer = new OutputStreamWriter(out);
+                    writer.write(currentJob.toJSON().toString());
+                    Log.d(TAG, "Writing Job: " + currentJob.getUUID());
+                    //timeButton.setText(TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
+                    writer.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
