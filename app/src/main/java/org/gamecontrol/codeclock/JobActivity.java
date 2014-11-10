@@ -125,11 +125,13 @@ public class JobActivity extends Activity{
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the HomeActivity/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                HomeActivity.openSettings(JobActivity.this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void toggleTimer(View view) {

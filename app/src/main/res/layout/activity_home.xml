@@ -8,13 +8,12 @@
     tools:ignore="MergeRootFrame">
 
 
-    <Button
+    <ImageButton
         android:id="@+id/createProjectButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:textSize="40dp"
-        android:text="+"
+        android:src="@drawable/ic_action_new"
         android:onClick="createProject" />
 
     <GridView

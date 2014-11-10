@@ -134,7 +134,7 @@ public class HomeActivity extends Activity {
                 wipeFiles();
                 return true;
             case R.id.action_settings:
-                //openSettings();
+                HomeActivity.openSettings(HomeActivity.this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -154,6 +154,11 @@ public class HomeActivity extends Activity {
         }
         initHome();
         refreshGridView();
+    }
+
+    protected static void openSettings(Activity activity){
+        Intent intent = new Intent(activity, SettingsActivity.class);
+        activity.startActivity(intent);
     }
 
     /**

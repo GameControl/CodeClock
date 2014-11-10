@@ -4,17 +4,42 @@
     android:layout_height="match_parent"
     tools:context="org.gamecontrol.codeclock.ProjectActivity">
 
-    <Button
-        android:id="@+id/createJobButton"
+    <LinearLayout
+        android:weightSum="4"
+        android:id="@+id/buttonLayout"
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:textSize="40dp"
-        android:text="+"
-        android:onClick="createJob" />
+        android:layout_alignParentBottom="true">
+        <ImageButton
+            android:layout_weight="1"
+            android:id="@+id/createJobButton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/ic_action_new"
+            android:onClick="createJob" />
+        <ImageButton
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/ic_action_labels"
+            android:scaleType="fitCenter"/>
+        <ImageButton
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/ic_action_paste"
+            android:scaleType="fitCenter"/>
+        <ImageButton
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/ic_action_edit"
+            android:scaleType="fitCenter"/>
+    </LinearLayout>
 
     <LinearLayout
-        android:layout_above="@+id/createJobButton"
+        android:layout_above="@+id/buttonLayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
