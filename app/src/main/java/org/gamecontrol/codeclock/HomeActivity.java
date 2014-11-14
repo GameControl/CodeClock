@@ -30,8 +30,6 @@ import java.util.ArrayList;
 public class HomeActivity extends Activity {
 
     private final static String TAG = "org.gamecontrol.codeclock.HomeActivity";
-    public final static String PROJECT_UUID = "org.gamecontrol.codeclock.PROJECT_UUID";
-    public final static String PROJECT_NAME = "org.gamecontrol.codeclock.PROJECT_NAME";
 
     private static ArrayList<String> fileNames;
     private static ArrayList<String> projectNames;
@@ -78,8 +76,8 @@ public class HomeActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 //Toast.makeText(HomeActivity.this, "" + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
-                intent.putExtra(PROJECT_UUID, fileNames.get(position));
-                intent.putExtra(PROJECT_NAME, projectNames.get(position));
+                intent.putExtra(CCUtils.PROJECT_UUID, fileNames.get(position));
+                intent.putExtra(CCUtils.PROJECT_NAME, projectNames.get(position));
                 startActivity(intent);
             }
         });

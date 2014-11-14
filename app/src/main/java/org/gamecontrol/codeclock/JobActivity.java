@@ -69,10 +69,10 @@ public class JobActivity extends Activity{
 
         // Get the Intent from ProjectActivity
         Intent intent = getIntent();
-        parentProject = intent.getStringExtra(HomeActivity.PROJECT_NAME);
-        parentProjectUUID = intent.getStringExtra(HomeActivity.PROJECT_UUID);
-        jobName = intent.getStringExtra(ProjectActivity.JOB_NAME);
-        jobUUID = intent.getStringExtra(ProjectActivity.JOB_UUID);
+        parentProject = intent.getStringExtra(CCUtils.PROJECT_NAME);
+        parentProjectUUID = intent.getStringExtra(CCUtils.PROJECT_UUID);
+        jobName = intent.getStringExtra(CCUtils.JOB_NAME);
+        jobUUID = intent.getStringExtra(CCUtils.JOB_UUID);
 
         //TODO
         jobTimer = (Button) findViewById(R.id.jobTimerButton);
@@ -99,7 +99,7 @@ public class JobActivity extends Activity{
             timeContainer.loadJob(currentJob);
         }
 
-        if(currentJob.getCurrentState() == Job.STATE_RUNNING){
+        if(currentJob.getCurrentState() == CCUtils.STATE_RUNNING){
             Button timeButton = (Button) findViewById(R.id.jobTimerButton);
             Drawable img = this.getResources().getDrawable(R.drawable.dial_running);
             timeButton.setBackground(img);
@@ -135,7 +135,7 @@ public class JobActivity extends Activity{
         if(ready){
             synchronized (mSynchronizedObject) {
                 startService();
-                if (timeContainer.getCurrentState() == Job.STATE_RUNNING) {
+                if (timeContainer.getCurrentState() == CCUtils.STATE_RUNNING) {
                     //change ring to pause
                     Button timeButton = (Button) findViewById(R.id.jobTimerButton);
                     Drawable img = view.getResources().getDrawable(R.drawable.dial_stopped);
@@ -187,20 +187,20 @@ public class JobActivity extends Activity{
             currentJob = new Job(UUID.fromString(jobUUID), parentProjectUUID, jobName, 0, null);
             Log.d(TAG, "new Job");
 
-            currentJob.setCurrentState(jobJSON.getInt(Job.STATE));
+            currentJob.setCurrentState(jobJSON.getInt(CCUtils.STATE));
 
-            JSONArray startTimesJSON = jobJSON.getJSONArray(Job.START_TIMES);
+            JSONArray startTimesJSON = jobJSON.getJSONArray(CCUtils.START_TIMES);
             ArrayList<Long> startTimesArray = CCUtils.JSONArrayToArrayListLong(startTimesJSON);
             currentJob.setStartTimes(startTimesArray);
             Log.d(TAG, "set start times" + currentJob.getStartTimes().toString());
 
-            JSONArray runningTimesJSON = jobJSON.getJSONArray(Job.RUNNING_TIMES);
+            JSONArray runningTimesJSON = jobJSON.getJSONArray(CCUtils.RUNNING_TIMES);
             ArrayList<Long> runningTimesArray = CCUtils.JSONArrayToArrayListLong(runningTimesJSON);
             currentJob.setRunningTimes(runningTimesArray);
             Log.d(TAG, "set running times" + currentJob.getRunningTimes().toString());
 
-            currentJob.setElapsed(Long.valueOf(jobJSON.get(Job.ELAPSED).toString()));
-            Log.d(TAG, "jobJSON.get(Job.ELAPSED) = " + jobJSON.get(Job.ELAPSED));
+            currentJob.setElapsed(Long.valueOf(jobJSON.get(CCUtils.ELAPSED).toString()));
+            Log.d(TAG, "jobJSON.get(Job.ELAPSED) = " + jobJSON.get(CCUtils.ELAPSED));
 
 
         } catch (Exception e) {
@@ -231,6 +231,26 @@ public class JobActivity extends Activity{
                 handler.post(updateTextRunnable);
             }
         }, 0, 16);
+    }
+
+    public void tagButton(View v) {
+        Intent intent = new Intent(JobActivity.this, TagActivity.class);
+        intent.putExtra(CCUtils.FILENAME, jobUUID);
+        intent.putExtra(CCUtils.TYPE, CCUtils.JOB);
+        startActivity(intent);
+    }
+
+    public void descriptionButton(View v) {
+        Intent intent = new Intent(JobActivity.this, DescriptionActivity.class);
+        intent.putExtra(CCUtils.FILENAME, jobUUID);
+        intent.putExtra(CCUtils.TYPE, CCUtils.JOB);
+        startActivity(intent);
+    }
+
+    public void settingsButton(View v) {
+        Intent intent = new Intent(JobActivity.this, JobSettingsActivity.class);
+        intent.putExtra(CCUtils.FILENAME, jobUUID);
+        startActivity(intent);
     }
 
     /**

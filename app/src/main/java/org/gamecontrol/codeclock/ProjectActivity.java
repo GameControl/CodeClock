@@ -18,7 +18,6 @@ import com.jjoe64.graphview.GraphViewSeries;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -29,11 +28,8 @@ import java.util.UUID;
 
 public class ProjectActivity extends Activity {
 
-    private final static String TAG = "org.gamecontrol.codeclock.ProjectActivity";
-    public final static String JOB_UUID = "org.gamecontrol.codeclock.JOB_UUID";
-    public final static String JOB_NAME = "org.gamecontrol.codeclock.JOB_NAME";
-    private final static String JOB_KEY = "jobs";
 
+    public final static String TAG = "org.gamecontrol.codeclock.ProjectActivity";
     private String projectName;
     private String projectUUID;
 
@@ -62,7 +58,7 @@ public class ProjectActivity extends Activity {
 
             Log.d(TAG, "After projectJSON init");
 
-            JSONArray tagsJSON = projectJSON.getJSONArray(Project.TAGS);
+            JSONArray tagsJSON = projectJSON.getJSONArray(CCUtils.TAGS);
 //            ArrayList<String> tags = new ArrayList<String>();
 //            for(int i = 0; i < tagsJSON.length(); i++){
 //                tags.add(tagsJSON.getString(i));
@@ -70,7 +66,7 @@ public class ProjectActivity extends Activity {
 
             ArrayList<String> tags = CCUtils.JSONArrayToArrayListString(tagsJSON);
 
-            JSONArray jobUUIDsJSON = projectJSON.getJSONArray(Project.JOB_UUIDS);
+            JSONArray jobUUIDsJSON = projectJSON.getJSONArray(CCUtils.JOB_UUIDS);
 //            ArrayList<String> jobUUIDs = new ArrayList<String>();
 //            for(int i = 0; i < jobUUIDJSON.length(); i++){
 //                jobUUIDs.add(jobUUIDJSON.getString(i));
@@ -78,7 +74,7 @@ public class ProjectActivity extends Activity {
 
             ArrayList<String> jobUUIDs = CCUtils.JSONArrayToArrayListString(jobUUIDsJSON);
 
-            JSONArray jobNamesJSON = projectJSON.getJSONArray(Project.JOB_NAMES);
+            JSONArray jobNamesJSON = projectJSON.getJSONArray(CCUtils.JOB_NAMES);
 //            ArrayList<String> jobNames = new ArrayList<String>();
 //            for(int i = 0; i < jobNameJSON.length(); i++){
 //                jobNames.add(jobNameJSON.getString(i));
@@ -86,7 +82,7 @@ public class ProjectActivity extends Activity {
 
             ArrayList<String> jobNames = CCUtils.JSONArrayToArrayListString(jobNamesJSON);
 
-            project = new Project(UUID.fromString(projectUUID), tags, projectJSON.getString(Project.NOTES), jobUUIDs, jobNames);
+            project = new Project(UUID.fromString(projectUUID), tags, projectJSON.getString(CCUtils.NOTES), jobUUIDs, jobNames);
             ActionBar actionBar = getActionBar();
             actionBar.setTitle(projectName);
 
@@ -105,8 +101,8 @@ public class ProjectActivity extends Activity {
 
         // Get the Intent from HomeActivity
         Intent intent = getIntent();
-        projectName = intent.getStringExtra(HomeActivity.PROJECT_NAME);
-        projectUUID = intent.getStringExtra(HomeActivity.PROJECT_UUID);
+        projectName = intent.getStringExtra(CCUtils.PROJECT_NAME);
+        projectUUID = intent.getStringExtra(CCUtils.PROJECT_UUID);
         addGraph();
     }
 
@@ -141,8 +137,8 @@ public class ProjectActivity extends Activity {
 
     public void createJob(View view){
         Intent intent = new Intent(ProjectActivity.this, CreateJobActivity.class);
-        intent.putExtra(HomeActivity.PROJECT_UUID, projectUUID);
-        intent.putExtra(HomeActivity.PROJECT_NAME, projectName);
+        intent.putExtra(CCUtils.PROJECT_UUID, projectUUID);
+        intent.putExtra(CCUtils.PROJECT_NAME, projectName);
         startActivity(intent);
     }
 
@@ -155,13 +151,33 @@ public class ProjectActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 //Toast.makeText(ProjectActivity.this, "" + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ProjectActivity.this, JobActivity.class);
-                intent.putExtra(HomeActivity.PROJECT_NAME, projectName);
-                intent.putExtra(HomeActivity.PROJECT_UUID, projectUUID);
-                intent.putExtra(ProjectActivity.JOB_NAME, project.getJobNames().get(position));
-                intent.putExtra(ProjectActivity.JOB_UUID, project.getJobUUIDs().get(position));
+                intent.putExtra(CCUtils.PROJECT_NAME, projectName);
+                intent.putExtra(CCUtils.PROJECT_UUID, projectUUID);
+                intent.putExtra(CCUtils.JOB_NAME, project.getJobNames().get(position));
+                intent.putExtra(CCUtils.JOB_UUID, project.getJobUUIDs().get(position));
                 startActivity(intent);
             }
         });
+    }
+
+    public void tagButton(View v) {
+        Intent intent = new Intent(ProjectActivity.this, TagActivity.class);
+        intent.putExtra(CCUtils.FILENAME, projectUUID);
+        intent.putExtra(CCUtils.TYPE, CCUtils.PROJECT);
+        startActivity(intent);
+    }
+
+    public void descriptionButton(View v) {
+        Intent intent = new Intent(ProjectActivity.this, DescriptionActivity.class);
+        intent.putExtra(CCUtils.FILENAME, projectUUID);
+        intent.putExtra(CCUtils.TYPE, CCUtils.PROJECT);
+        startActivity(intent);
+    }
+
+    public void settingsButton(View v) {
+        Intent intent = new Intent(ProjectActivity.this, JobSettingsActivity.class);
+        intent.putExtra(CCUtils.FILENAME, projectUUID);
+        startActivity(intent);
     }
 
     public void addGraph() {

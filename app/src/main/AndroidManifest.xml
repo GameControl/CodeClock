@@ -43,6 +43,22 @@
             android:name="org.gamecontrol.codeclock.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name="org.gamecontrol.codeclock.JobSettingsActivity"
+            android:label="@string/title_activity_job_settings" >
+        </activity>
+        <activity
+            android:name="org.gamecontrol.codeclock.ProjectSettingsActivity"
+            android:label="@string/title_activity_project_settings" >
+        </activity>
+        <activity
+            android:name="org.gamecontrol.codeclock.TagActivity"
+            android:label="@string/title_activity_tag" >
+        </activity>
+        <activity
+            android:name="org.gamecontrol.codeclock.DescriptionActivity"
+            android:label="@string/title_activity_description" >
+        </activity>
     </application>
 
 </manifest>

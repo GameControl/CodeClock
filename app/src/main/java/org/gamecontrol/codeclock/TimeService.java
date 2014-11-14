@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class TimeService extends Service {
@@ -93,25 +92,25 @@ public class TimeService extends Service {
         }
 
         public long getTotalElapsed() {
-            if(job.getCurrentState() == Job.STATE_RUNNING){
+            if(job.getCurrentState() == CCUtils.STATE_RUNNING){
                 return job.getElapsed() + (System.currentTimeMillis() - job.getLastStartTime());
             } else
                 return job.getElapsed();
         }
 
         public void start() {
-            if(job.getCurrentState() != Job.STATE_RUNNING) {
+            if(job.getCurrentState() != CCUtils.STATE_RUNNING) {
                 synchronized (mSynchronizedObject) {
                     job.addStartTime(System.currentTimeMillis());
-                    job.setCurrentState(Job.STATE_RUNNING);
+                    job.setCurrentState(CCUtils.STATE_RUNNING);
                 }
             }
         }
 
         public void pause() {
-            if(job.getCurrentState() != Job.STATE_PAUSED) {
+            if(job.getCurrentState() != CCUtils.STATE_PAUSED) {
                 synchronized (mSynchronizedObject) {
-                    job.setCurrentState(Job.STATE_PAUSED);
+                    job.setCurrentState(CCUtils.STATE_PAUSED);
                     long currentLap = (System.currentTimeMillis() - job.getLastStartTime());
                     job.addRunningTimes(currentLap);
                 }
@@ -127,7 +126,7 @@ public class TimeService extends Service {
 
         public void saveJob() {
             if(job != null) {
-                if (job.getCurrentState() == Job.STATE_RUNNING) {
+                if (job.getCurrentState() == CCUtils.STATE_RUNNING) {
                     pause();
                 }
             }

@@ -11,21 +11,6 @@ import java.util.UUID;
  */
 public class Job {
 
-    public static final int STATE_INIT = 0;
-    public static final int STATE_PAUSED = 1;
-    public static final int STATE_RUNNING = 2;
-
-    public final static String UUID = "uuid";
-    public final static String PROJECT_UUID = "projectUUID";
-    public final static String NAME = "name";
-    public final static String ESTIMATE = "estimate";
-    public final static String NOTES = "notes";
-    public final static String TAGS = "tags";
-    public final static String START_TIMES = "startTimes";
-    public final static String RUNNING_TIMES = "runningTimes";
-    public final static String ELAPSED = "elapsed";
-    public final static String STATE = "state";
-
     private UUID uuid;
     private String projectUUID;
     private String name;
@@ -43,11 +28,14 @@ public class Job {
         this.name = name;
         this.estimate = estimate;
         notes = "";
-        this.tags = tags;
+        if(tags == null)
+            this.tags = new ArrayList<String>();
+        else
+            this.tags = tags;
         startTimes = new ArrayList<Long>();
         runningTimes = new ArrayList<Long>();
         elapsed = 0;
-        currentState = STATE_INIT;
+        currentState = CCUtils.STATE_INIT;
     }
 
     public UUID getUUID() {
@@ -171,28 +159,28 @@ public class Job {
     public JSONObject toJSON() throws JSONException{
         JSONObject json = new JSONObject();
 
-        json.put(NAME, name);
-        json.put(ESTIMATE, estimate);
-        json.put(NOTES, notes);
-        json.put(ELAPSED, elapsed);
-        json.put(STATE, currentState);
+        json.put(CCUtils.NAME, name);
+        json.put(CCUtils.ESTIMATE, estimate);
+        json.put(CCUtils.NOTES, notes);
+        json.put(CCUtils.ELAPSED, elapsed);
+        json.put(CCUtils.STATE, currentState);
 
         JSONArray tagsArrayJSON = new JSONArray();
-        json.put(TAGS, tagsArrayJSON);
+        json.put(CCUtils.TAGS, tagsArrayJSON);
         if (tags != null) {
             for (String t : tags)
                 tagsArrayJSON.put(t);
         }
 
         JSONArray startTimesArrayJSON = new JSONArray();
-        json.put(START_TIMES, startTimesArrayJSON);
+        json.put(CCUtils.START_TIMES, startTimesArrayJSON);
         if (startTimes != null) {
             for (Long t : startTimes)
                 startTimesArrayJSON.put(t);
         }
 
         JSONArray runningTimesArrayJSON = new JSONArray();
-        json.put(RUNNING_TIMES, runningTimesArrayJSON);
+        json.put(CCUtils.RUNNING_TIMES, runningTimesArrayJSON);
         if (runningTimes != null) {
             for (Long t : runningTimes)
                 runningTimesArrayJSON.put(t);

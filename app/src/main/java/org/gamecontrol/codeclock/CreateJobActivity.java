@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -47,8 +46,8 @@ public class CreateJobActivity extends Activity {
 
         // Get the Intent from ProjectActivity
         Intent intent = getIntent();
-        parentProjectName = intent.getStringExtra(HomeActivity.PROJECT_NAME);
-        parentProjectUUID = intent.getStringExtra(HomeActivity.PROJECT_UUID);
+        parentProjectName = intent.getStringExtra(CCUtils.PROJECT_NAME);
+        parentProjectUUID = intent.getStringExtra(CCUtils.PROJECT_UUID);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class CreateJobActivity extends Activity {
                 Log.d(TAG, "Read: " + sb.toString());
 
                 JSONObject projectJSON = new JSONObject(sb.toString());
-                JSONArray jobNames = projectJSON.getJSONArray(Project.JOB_NAMES);
+                JSONArray jobNames = projectJSON.getJSONArray(CCUtils.JOB_NAMES);
                 for(int i = 0; i < jobNames.length(); ++i) {
                     if (jobNames.get(i).equals(jobName)) {
                         Toast toast = Toast.makeText(this, "A job with that name already exists.", Toast.LENGTH_SHORT);
@@ -119,8 +118,8 @@ public class CreateJobActivity extends Activity {
                     }
                 }
 
-                projectJSON.accumulate(Project.JOB_NAMES, jobName);
-                projectJSON.accumulate(Project.JOB_UUIDS, jobUUID);
+                projectJSON.accumulate(CCUtils.JOB_NAMES, jobName);
+                projectJSON.accumulate(CCUtils.JOB_UUIDS, jobUUID);
                 Log.d(TAG, "Writing :" + projectJSON.toString());
                 OutputStream out = this.openFileOutput(parentProjectUUID + ".json", Context.MODE_PRIVATE);
                 writer = new OutputStreamWriter(out);

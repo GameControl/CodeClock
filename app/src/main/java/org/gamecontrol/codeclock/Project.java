@@ -12,12 +12,6 @@ import java.util.UUID;
  */
 public class Project {
 
-    public final static String UUID = "uuid";
-    public final static String TAGS = "tags";
-    public final static String NOTES = "notes";
-    public final static String JOB_UUIDS = "jobUUIDs";
-    public final static String JOB_NAMES = "jobNames";
-
     private UUID uuid;
     private ArrayList<String> tags;
     private String notes = "";
@@ -108,26 +102,26 @@ public class Project {
 
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put(UUID, uuid.toString());
+        json.put(CCUtils.UUID, uuid.toString());
 
         JSONArray tagsArrayJSON = new JSONArray();
-        json.put(TAGS, tagsArrayJSON);
+        json.put(CCUtils.TAGS, tagsArrayJSON);
         if (tags != null) {
             for (String t : tags)
                 tagsArrayJSON.put(t);
         }
 
-        json.put(NOTES, notes);
+        json.put(CCUtils.NOTES, notes);
 
         JSONArray jobsArrayJSON = new JSONArray();
-        json.put(JOB_UUIDS, jobsArrayJSON);
+        json.put(CCUtils.JOB_UUIDS, jobsArrayJSON);
         if (jobUUIDs != null) {
             for (String j : jobUUIDs)
                 jobsArrayJSON.put(j);
         }
 
         JSONArray jobNamesArrayJSON = new JSONArray();
-        json.put(JOB_NAMES, jobNamesArrayJSON);
+        json.put(CCUtils.JOB_NAMES, jobNamesArrayJSON);
         if (jobNames != null) {
             for (String j : jobNames)
                 jobNamesArrayJSON.put(j);
