@@ -60,13 +60,31 @@ public class CCUtils {
     public void saveProject(Project p, String filename) throws JSONException, IOException {
         Writer writer = null;
         try {
-            OutputStream out = mContext.openFileOutput(filename, Context.MODE_PRIVATE);
+            OutputStream out = mContext.openFileOutput(filename, Context.MODE_PRIVATE); //TODO change this not to use context
             writer = new OutputStreamWriter(out);
             writer.write(p.toJSON().toString());
         } finally {
             if (writer != null)
                 writer.close();
         }
+    }
+
+    public static void changeProjectName(InputStream in, OutputStream out, String oldName, String newName) {
+        try {
+            Log.d(TAG, "Reading in home file");
+            JSONObject homeJSON = fileToJSON(in);
+            String homeJSONString = homeJSON.toString();
+            homeJSONString = homeJSONString.replace(oldName, newName);
+            Writer writer = new OutputStreamWriter(out);
+            Log.d(TAG, "Writing: " + homeJSONString);
+            writer.write(homeJSONString);
+            Log.d(TAG, "Changing project name from: " + oldName + " to " + newName);
+            writer.close();
+
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
+        Log.d(TAG, "call to changeProjectName() done");
     }
 
     public static JSONObject fileToJSON(InputStream in) {
@@ -83,7 +101,7 @@ public class CCUtils {
             return (JSONObject) new JSONTokener(sb.toString()).nextValue();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d(TAG, e.toString());
         }
 
         return null;

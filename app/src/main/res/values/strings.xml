@@ -23,5 +23,6 @@
     <string name="title_activity_project_settings">ProjectSettingsActivity</string>
     <string name="title_activity_tag">TagActivity</string>
     <string name="title_activity_description">DescriptionActivity</string>
+    <string name="project_name">Project Name:</string>
 
 </resources>

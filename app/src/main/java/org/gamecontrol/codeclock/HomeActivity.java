@@ -38,7 +38,7 @@ public class HomeActivity extends Activity {
         fileNames = new ArrayList<String>();
         projectNames = new ArrayList<String>();
         try {
-            Log.d(HomeActivity.TAG, "Reading in projects");
+            Log.d(HomeActivity.TAG, "Reading in home file");
             InputStream in = this.openFileInput("home.json");
             InputStreamReader streamReader = new InputStreamReader(in);
             BufferedReader reader = new BufferedReader(streamReader);
@@ -57,7 +57,7 @@ public class HomeActivity extends Activity {
                 fileNames.add(homeJSON.getString(names.getString(i)));
             }
         } catch (Exception e){
-            e.printStackTrace();
+            e.toString();
         }
     }
 

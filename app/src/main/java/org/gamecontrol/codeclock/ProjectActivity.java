@@ -175,7 +175,8 @@ public class ProjectActivity extends Activity {
     }
 
     public void settingsButton(View v) {
-        Intent intent = new Intent(ProjectActivity.this, JobSettingsActivity.class);
+        Intent intent = new Intent(ProjectActivity.this, ProjectSettingsActivity.class);
+        intent.putExtra(CCUtils.PROJECT_NAME, projectName);
         intent.putExtra(CCUtils.FILENAME, projectUUID);
         startActivity(intent);
     }
