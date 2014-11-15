@@ -63,22 +63,28 @@ public class ProjectActivity extends Activity {
             Log.d(TAG, "After projectJSON init");
 
             JSONArray tagsJSON = projectJSON.getJSONArray(Project.TAGS);
-            ArrayList<String> tags = new ArrayList<String>();
-            for(int i = 0; i < tagsJSON.length(); i++){
-                tags.add(tagsJSON.getString(i));
-            }
+//            ArrayList<String> tags = new ArrayList<String>();
+//            for(int i = 0; i < tagsJSON.length(); i++){
+//                tags.add(tagsJSON.getString(i));
+//            }
 
-            JSONArray jobUUIDJSON = projectJSON.getJSONArray(Project.JOB_UUIDS);
-            ArrayList<String> jobUUIDs = new ArrayList<String>();
-            for(int i = 0; i < jobUUIDJSON.length(); i++){
-                jobUUIDs.add(jobUUIDJSON.getString(i));
-            }
+            ArrayList<String> tags = CCUtils.JSONArrayToArrayListString(tagsJSON);
 
-            JSONArray jobNameJSON = projectJSON.getJSONArray(Project.JOB_NAMES);
-            ArrayList<String> jobNames = new ArrayList<String>();
-            for(int i = 0; i < jobNameJSON.length(); i++){
-                jobNames.add(jobNameJSON.getString(i));
-            }
+            JSONArray jobUUIDsJSON = projectJSON.getJSONArray(Project.JOB_UUIDS);
+//            ArrayList<String> jobUUIDs = new ArrayList<String>();
+//            for(int i = 0; i < jobUUIDJSON.length(); i++){
+//                jobUUIDs.add(jobUUIDJSON.getString(i));
+//            }
+
+            ArrayList<String> jobUUIDs = CCUtils.JSONArrayToArrayListString(jobUUIDsJSON);
+
+            JSONArray jobNamesJSON = projectJSON.getJSONArray(Project.JOB_NAMES);
+//            ArrayList<String> jobNames = new ArrayList<String>();
+//            for(int i = 0; i < jobNameJSON.length(); i++){
+//                jobNames.add(jobNameJSON.getString(i));
+//            }
+
+            ArrayList<String> jobNames = CCUtils.JSONArrayToArrayListString(jobNamesJSON);
 
             project = new Project(UUID.fromString(projectUUID), tags, projectJSON.getString(Project.NOTES), jobUUIDs, jobNames);
             ActionBar actionBar = getActionBar();

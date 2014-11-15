@@ -19,11 +19,8 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -185,7 +182,7 @@ public class JobActivity extends Activity{
             Log.d(TAG, "Opening file:" + jobUUID + ".json");
 
             InputStream in = this.openFileInput(jobUUID + ".json");
-            JSONObject jobJSON = CodeClockJSONSerializer.fileToJSON(in);
+            JSONObject jobJSON = CCUtils.fileToJSON(in);
 
             currentJob = new Job(UUID.fromString(jobUUID), parentProjectUUID, jobName, 0, null);
             Log.d(TAG, "new Job");
@@ -193,12 +190,12 @@ public class JobActivity extends Activity{
             currentJob.setCurrentState(jobJSON.getInt(Job.STATE));
 
             JSONArray startTimesJSON = jobJSON.getJSONArray(Job.START_TIMES);
-            ArrayList<Long> startTimesArray = CodeClockJSONSerializer.JSONArrayToArrayListLong(startTimesJSON);
+            ArrayList<Long> startTimesArray = CCUtils.JSONArrayToArrayListLong(startTimesJSON);
             currentJob.setStartTimes(startTimesArray);
             Log.d(TAG, "set start times" + currentJob.getStartTimes().toString());
 
             JSONArray runningTimesJSON = jobJSON.getJSONArray(Job.RUNNING_TIMES);
-            ArrayList<Long> runningTimesArray = CodeClockJSONSerializer.JSONArrayToArrayListLong(runningTimesJSON);
+            ArrayList<Long> runningTimesArray = CCUtils.JSONArrayToArrayListLong(runningTimesJSON);
             currentJob.setRunningTimes(runningTimesArray);
             Log.d(TAG, "set running times" + currentJob.getRunningTimes().toString());
 

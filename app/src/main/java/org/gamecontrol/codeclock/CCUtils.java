@@ -20,16 +20,15 @@ import java.util.ArrayList;
 /**
  * Created by tony on 10/25/2014.
  */
-public class CodeClockJSONSerializer {
+public class CCUtils {
     private static final String TAG = "JSONSerializer";
     private Context mContext;
 
-    public CodeClockJSONSerializer(Context c) {
+    public CCUtils(Context c) {
         mContext = c;
     }
 
     public void saveProject(Project p, String filename) throws JSONException, IOException {
-
         Writer writer = null;
         try {
             OutputStream out = mContext.openFileOutput(filename, Context.MODE_PRIVATE);
@@ -71,6 +70,19 @@ public class CodeClockJSONSerializer {
         for (int i = 0; i < input.length(); i++) {
             entry = (Number) input.get(i);
             output.add(entry.longValue());
+        }
+
+        return output;
+    }
+
+    public static ArrayList<String> JSONArrayToArrayListString(JSONArray input) throws JSONException {
+        ArrayList<String> output = new ArrayList<String>();
+
+        if (input == null)
+            return null;
+
+        for (int i = 0; i < input.length(); i++) {
+            output.add(input.get(i).toString());
         }
 
         return output;
