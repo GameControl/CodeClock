@@ -69,12 +69,16 @@ public class CCUtils {
         }
     }
 
-    public static void changeProjectName(InputStream in, OutputStream out, String oldName, String newName) {
+    public static void changeProjectName(Context context, String oldName, String newName) {
         try {
+            InputStream in = context.openFileInput("home.json");
+
             Log.d(TAG, "Reading in home file");
             JSONObject homeJSON = fileToJSON(in);
             String homeJSONString = homeJSON.toString();
             homeJSONString = homeJSONString.replace(oldName, newName);
+
+            OutputStream out = context.openFileOutput("home.json", Context.MODE_PRIVATE);
             Writer writer = new OutputStreamWriter(out);
             Log.d(TAG, "Writing: " + homeJSONString);
             writer.write(homeJSONString);
