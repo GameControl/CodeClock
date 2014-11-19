@@ -22,11 +22,10 @@ import java.util.ArrayList;
  */
 public class CCUtils {
 
-    private static final String TAG = "JSONSerializer";
-
     public static final int STATE_INIT = 0;
     public static final int STATE_PAUSED = 1;
     public static final int STATE_RUNNING = 2;
+    public static final int STATE_COMPLETE = 3;
 
     public final static String FILENAME = "FILENAME";
     public final static String TYPE = "TYPE";
@@ -51,6 +50,7 @@ public class CCUtils {
     public final static String JOB_NAME = "JOB_NAME";
     public final static String PROJECT_NAME = "PROJECT_NAME";
 
+    private static final String TAG = "CCUtils";
     private Context mContext;
 
     public CCUtils(Context c) {

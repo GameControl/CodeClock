@@ -19,17 +19,18 @@ import com.jjoe64.graphview.GraphViewSeries;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.UUID;
 
 
 public class ProjectActivity extends Activity {
 
+    private final static String TAG = "org.gamecontrol.codeclock.ProjectActivity";
+    public final static String JOB_UUID = "org.gamecontrol.codeclock.JOB_UUID";
+    public final static String JOB_NAME = "org.gamecontrol.codeclock.JOB_NAME";
+    private final static String JOB_KEY = "jobs";
 
-    public final static String TAG = "org.gamecontrol.codeclock.ProjectActivity";
     private String projectName;
     private String projectUUID;
 
@@ -37,23 +38,23 @@ public class ProjectActivity extends Activity {
 
     private void initProject(){
         try {
-            Log.d(TAG, "Reading a project in initProject()");
-            Log.d(TAG, "Opening file:" + projectUUID + ".json");
+//            Log.d(TAG, "Reading a project in initProject()");
+//            Log.d(TAG, "Opening file:" + projectUUID + ".json");
             InputStream in = this.openFileInput(projectUUID + ".json");
-            InputStreamReader streamReader = new InputStreamReader(in);
-            BufferedReader reader = new BufferedReader(streamReader);
-            String read = reader.readLine();
-            Log.d(TAG, "Finished opening file and creating reader");
+//            InputStreamReader streamReader = new InputStreamReader(in);
+//            BufferedReader reader = new BufferedReader(streamReader);
+//            String read = reader.readLine();
+//            Log.d(TAG, "Finished opening file and creating reader");
+//
+//            StringBuilder sb = new StringBuilder();
+//            while (read != null) {
+//                //System.out.println(read);
+//                sb.append(read);
+//                read = reader.readLine();
+//            }
+//            Log.d(TAG, "Read: " + sb.toString());
 
-            StringBuilder sb = new StringBuilder();
-            while (read != null) {
-                //System.out.println(read);
-                sb.append(read);
-                read = reader.readLine();
-            }
-            Log.d(TAG, "Read: " + sb.toString());
-
-            JSONObject projectJSON = new JSONObject(sb.toString()); //(JSONObject) new JSONTokener(sb.toString()).nextValue();
+            JSONObject projectJSON = CCUtils.fileToJSON(in); //(JSONObject) new JSONTokener(sb.toString()).nextValue();
             //create the project
 
             Log.d(TAG, "After projectJSON init");
