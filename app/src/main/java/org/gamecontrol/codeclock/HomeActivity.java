@@ -39,18 +39,7 @@ public class HomeActivity extends Activity {
         projectNames = new ArrayList<String>();
         try {
             Log.d(HomeActivity.TAG, "Reading in home file");
-            InputStream in = this.openFileInput("home.json");
-            InputStreamReader streamReader = new InputStreamReader(in);
-            BufferedReader reader = new BufferedReader(streamReader);
-            String read = reader.readLine();
-
-            StringBuilder sb = new StringBuilder();
-            while (read != null) {
-                //System.out.println(read);
-                sb.append(read);
-                read = reader.readLine();
-            }
-            JSONObject homeJSON = new JSONObject(sb.toString());
+            JSONObject homeJSON = CCUtils.fileToJSON(this.getApplicationContext(), "home.json");
             JSONArray names = homeJSON.names();
             for(int i = 0; i < names.length(); i++){
                 projectNames.add(names.getString(i));
@@ -98,20 +87,10 @@ public class HomeActivity extends Activity {
             if (!file.exists()) {
                 JSONObject empty = new JSONObject();
                 Log.d(HomeActivity.TAG, "INIT home.json :" + empty.toString());
-                OutputStream out = this.openFileOutput("home.json", Context.MODE_PRIVATE);
-                writer = new OutputStreamWriter(out);
-                writer.write(empty.toString());
+                CCUtils.JSONToFile(this.getApplicationContext(), empty, "home.json");
             }
         } catch (Exception e){
             e.printStackTrace();
-        } finally {
-            if(writer != null) {
-                try {
-                    writer.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 

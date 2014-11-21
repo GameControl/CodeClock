@@ -3,7 +3,6 @@ package org.gamecontrol.codeclock;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -191,34 +190,29 @@ public class JobActivity extends Activity{
 
     private void initJob() {
         try {
-            Log.d(TAG, "Reading a job file in initJob()");
-            Log.d(TAG, "Opening file:" + jobUUID + ".json");
+            // get JSON of job file
+            JSONObject jobJSON = CCUtils.fileToJSON(this.getApplicationContext(), jobUUID + ".json");
 
-            InputStream in = this.openFileInput(jobUUID + ".json");
-            JSONObject jobJSON = CCUtils.fileToJSON(in);
-
+            // construct a new job object
             currentJob = new Job(UUID.fromString(jobUUID), parentProjectUUID, jobName, 0, null);
-            Log.d(TAG, "new Job");
 
+            // set job state
             currentJob.setCurrentState(jobJSON.getInt(CCUtils.STATE));
 
+            // set job start times
             JSONArray startTimesJSON = jobJSON.getJSONArray(CCUtils.START_TIMES);
             ArrayList<Long> startTimesArray = CCUtils.JSONArrayToArrayListLong(startTimesJSON);
             currentJob.setStartTimes(startTimesArray);
-            Log.d(TAG, "set start times" + currentJob.getStartTimes().toString());
 
+            // set job running times
             JSONArray runningTimesJSON = jobJSON.getJSONArray(CCUtils.RUNNING_TIMES);
             ArrayList<Long> runningTimesArray = CCUtils.JSONArrayToArrayListLong(runningTimesJSON);
             currentJob.setRunningTimes(runningTimesArray);
-            Log.d(TAG, "set running times" + currentJob.getRunningTimes().toString());
 
+            // set job total elapsed time
             currentJob.setElapsed(Long.valueOf(jobJSON.get(CCUtils.ELAPSED).toString()));
-            Log.d(TAG, "jobJSON.get(Job.ELAPSED) = " + jobJSON.get(CCUtils.ELAPSED));
-
-
         } catch (Exception e) {
             Log.d(TAG, "caught exception: " + e.toString());
-            e.printStackTrace();
         }
     }
 

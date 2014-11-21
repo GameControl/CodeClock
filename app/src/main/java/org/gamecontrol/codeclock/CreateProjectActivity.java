@@ -2,24 +2,16 @@ package org.gamecontrol.codeclock;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.UUID;
 
 
@@ -60,6 +52,7 @@ public class CreateProjectActivity extends Activity {
             UUID projectUUID = UUID.randomUUID();
             String projectName = ((EditText) findViewById(R.id.projectName)).getText().toString();
 
+            // Warn and prevent user from creating a project with an empty name
             if (projectName.equals("")) {
                 Toast toast = Toast.makeText(this, "Please enter a project name.", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.TOP, 0, 250);
@@ -68,59 +61,26 @@ public class CreateProjectActivity extends Activity {
                 return;
             }
 
-            Writer writer = null;
+            // open home so that we can check if user is trying to use a name that already exists
+            JSONObject homeJSON = CCUtils.fileToJSON(this.getApplicationContext(), "home.json");
+            if (homeJSON.has(projectName)) {
+                Toast toast = Toast.makeText(this, "A project with that name already exists.", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP, 0, 250);
+                toast.show();
+                clicked = false;
+                return;
+            }
+
             try {
-                Log.d(TAG, "Beginning file IO");
-                InputStream in = this.openFileInput("home.json");
-                InputStreamReader streamReader = new InputStreamReader(in);
-                BufferedReader reader = new BufferedReader(streamReader);
-                String read = reader.readLine();
-
-                StringBuilder sb = new StringBuilder();
-                while (read != null) {
-                    //System.out.println(read);
-                    sb.append(read);
-                    read = reader.readLine();
-                }
-
-                JSONObject homeJSON = new JSONObject(sb.toString());
-                if (homeJSON.has(projectName)) {
-                    Toast toast = Toast.makeText(this, "A project with that name already exists.", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP, 0, 250);
-                    toast.show();
-                    clicked = false;
-                    return;
-                }
-
+                // add the project name and UUID to the home.json file
                 homeJSON.put(projectName, projectUUID);
-                Log.d(TAG, "Writing :" + homeJSON.toString());
-                OutputStream out = this.openFileOutput("home.json", Context.MODE_PRIVATE);
-                writer = new OutputStreamWriter(out);
-                writer.write(homeJSON.toString());
+                CCUtils.JSONToFile(this.getApplicationContext(), homeJSON, "home.json");
 
-                try {
-                    writer.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                Project newProj = new Project(projectUUID);
-
-                out = this.openFileOutput(projectUUID.toString() + ".json", Context.MODE_PRIVATE);
-                writer = new OutputStreamWriter(out);
-                writer.write(newProj.toJSON().toString());
-                Log.d(TAG, "Writing Project: " + newProj.getUuid().toString());
-
+                // construct a project and save it in a new file
+                Project newProject = new Project(projectUUID);
+                CCUtils.JSONToFile(this.getApplicationContext(), newProject.toJSON(), projectUUID + ".json");
             } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                Log.d(TAG, e.toString());
             }
             finish();
         }

@@ -38,57 +38,28 @@ public class ProjectActivity extends Activity {
 
     private void initProject(){
         try {
-//            Log.d(TAG, "Reading a project in initProject()");
-//            Log.d(TAG, "Opening file:" + projectUUID + ".json");
-            InputStream in = this.openFileInput(projectUUID + ".json");
-//            InputStreamReader streamReader = new InputStreamReader(in);
-//            BufferedReader reader = new BufferedReader(streamReader);
-//            String read = reader.readLine();
-//            Log.d(TAG, "Finished opening file and creating reader");
-//
-//            StringBuilder sb = new StringBuilder();
-//            while (read != null) {
-//                //System.out.println(read);
-//                sb.append(read);
-//                read = reader.readLine();
-//            }
-//            Log.d(TAG, "Read: " + sb.toString());
+            // get a JSONObject of the project file
+            JSONObject projectJSON = CCUtils.fileToJSON(this.getApplicationContext(), projectUUID + ".json");
 
-            JSONObject projectJSON = CCUtils.fileToJSON(in); //(JSONObject) new JSONTokener(sb.toString()).nextValue();
-            //create the project
-
-            Log.d(TAG, "After projectJSON init");
-
+            // find the array of 'tags' in the JSON and convert it to ArrayList<String>
             JSONArray tagsJSON = projectJSON.getJSONArray(CCUtils.TAGS);
-//            ArrayList<String> tags = new ArrayList<String>();
-//            for(int i = 0; i < tagsJSON.length(); i++){
-//                tags.add(tagsJSON.getString(i));
-//            }
-
             ArrayList<String> tags = CCUtils.JSONArrayToArrayListString(tagsJSON);
 
+            // find the array of 'jobUUIDs' in the JSON and convert it to ArrayList<String>
             JSONArray jobUUIDsJSON = projectJSON.getJSONArray(CCUtils.JOB_UUIDS);
-//            ArrayList<String> jobUUIDs = new ArrayList<String>();
-//            for(int i = 0; i < jobUUIDJSON.length(); i++){
-//                jobUUIDs.add(jobUUIDJSON.getString(i));
-//            }
-
             ArrayList<String> jobUUIDs = CCUtils.JSONArrayToArrayListString(jobUUIDsJSON);
 
+            // find the array of 'jobNames' in the JSON and convert it to ArrayList<String>
             JSONArray jobNamesJSON = projectJSON.getJSONArray(CCUtils.JOB_NAMES);
-//            ArrayList<String> jobNames = new ArrayList<String>();
-//            for(int i = 0; i < jobNameJSON.length(); i++){
-//                jobNames.add(jobNameJSON.getString(i));
-//            }
-
             ArrayList<String> jobNames = CCUtils.JSONArrayToArrayListString(jobNamesJSON);
 
+            // construct a new Project object with the information we just read
             project = new Project(UUID.fromString(projectUUID), tags, projectJSON.getString(CCUtils.NOTES), jobUUIDs, jobNames);
             ActionBar actionBar = getActionBar();
             actionBar.setTitle(projectName);
 
         } catch (Exception e){
-            e.printStackTrace();
+            Log.d(TAG, e.toString());
         }
         if(project == null) {
             project = new Project(UUID.fromString(projectUUID));

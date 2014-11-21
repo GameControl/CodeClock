@@ -2,10 +2,8 @@ package org.gamecontrol.codeclock;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -13,15 +11,8 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -90,65 +81,31 @@ public class CreateJobActivity extends Activity {
                 return;
             }
 
-            Writer writer = null;
             try {
-                Log.d(TAG, "Beginning file IO");
-                InputStream in = this.openFileInput(parentProjectUUID + ".json");
-                InputStreamReader streamReader = new InputStreamReader(in);
-                BufferedReader reader = new BufferedReader(streamReader);
-                String read = reader.readLine();
+                // open parent project's file to prevent duplicate job names and save new name/UUID
+                JSONObject projectJSON = CCUtils.fileToJSON(this.getApplicationContext(), parentProjectUUID + ".json");
 
-                StringBuilder sb = new StringBuilder();
-                while (read != null) {
-                    //System.out.println(read);
-                    sb.append(read);
-                    read = reader.readLine();
-                }
-                Log.d(TAG, "Read: " + sb.toString());
-
-                JSONObject projectJSON = new JSONObject(sb.toString());
-                JSONArray jobNames = projectJSON.getJSONArray(CCUtils.JOB_NAMES);
-                for(int i = 0; i < jobNames.length(); ++i) {
-                    if (jobNames.get(i).equals(jobName)) {
+                if (projectJSON.has(jobName)) {
                         Toast toast = Toast.makeText(this, "A job with that name already exists.", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP, 0, 250);
                         toast.show();
                         clicked = false;
                         return;
-                    }
                 }
 
+                // add name and UUID to json file and save it out
                 projectJSON.accumulate(CCUtils.JOB_NAMES, jobName);
                 projectJSON.accumulate(CCUtils.JOB_UUIDS, jobUUID);
-                Log.d(TAG, "Writing :" + projectJSON.toString());
-                OutputStream out = this.openFileOutput(parentProjectUUID + ".json", Context.MODE_PRIVATE);
-                writer = new OutputStreamWriter(out);
-                writer.write(projectJSON.toString());
+                CCUtils.JSONToFile(this.getApplicationContext(), projectJSON, parentProjectUUID + ".json");
 
-                try {
-                    writer.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                // construct a job and save in a new file
                 Job newJob = new Job(jobUUID, parentProjectUUID, jobName, estimate, tags);
-
-                out = this.openFileOutput(jobUUID.toString() + ".json", Context.MODE_PRIVATE);
-                writer = new OutputStreamWriter(out);
-                writer.write(newJob.toJSON().toString());
-                Log.d(TAG, "Writing Job: " + newJob.getUUID());
+                CCUtils.JSONToFile(this.getApplicationContext(), newJob.toJSON(), jobUUID.toString() + ".json");
 
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
             }
+
             finish();
         }
     }
