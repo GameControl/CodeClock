@@ -173,14 +173,10 @@ public class JobActivity extends Activity{
                     createNotification();
                 }
                 try {
-                    OutputStream out = this.openFileOutput(jobUUID + ".json", Context.MODE_PRIVATE);
-                    OutputStreamWriter writer = new OutputStreamWriter(out);
-                    writer.write(currentJob.toJSON().toString());
+                    CCUtils.JSONToFile(this.getApplicationContext(), currentJob.toJSON(), jobUUID + ".json");
                     Log.d(TAG, "Writing Job: " + currentJob.getUUID());
-                    //timeButton.setText(TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
-                    writer.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.d(TAG, e.toString());
                 }
             }
         }

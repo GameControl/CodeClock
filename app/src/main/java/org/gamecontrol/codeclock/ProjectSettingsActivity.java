@@ -41,13 +41,15 @@ public class ProjectSettingsActivity extends Activity {
     }
 
     public void updateSettings(View v) {
+        //TODO prevent empty and dupe names
+        //TODO have check button take you back to project activity
         try {
             EditText newProjectName = (EditText) findViewById(R.id.editProjectName);
-            Log.d(TAG, "Trying to change project name to: " + newProjectName.getText().toString());
             CCUtils.changeProjectName(this.getApplicationContext(), projectName, newProjectName.getText().toString());
         } catch (Exception e) {
             Log.d(TAG, e.toString());
         }
+
     }
 
     @Override

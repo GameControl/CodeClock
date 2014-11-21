@@ -81,7 +81,6 @@ public class HomeActivity extends Activity {
     }
 
     private void initHome() {
-        Writer writer = null;
         try {
             File file = this.getFileStreamPath("home.json");
             if (!file.exists()) {
@@ -90,7 +89,7 @@ public class HomeActivity extends Activity {
                 CCUtils.JSONToFile(this.getApplicationContext(), empty, "home.json");
             }
         } catch (Exception e){
-            e.printStackTrace();
+            Log.d(TAG, e.toString());
         }
     }
 

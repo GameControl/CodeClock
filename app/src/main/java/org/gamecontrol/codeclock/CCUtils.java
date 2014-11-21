@@ -71,6 +71,10 @@ public class CCUtils {
 
     public static void changeProjectName(Context c, String oldName, String newName) {
         try {
+            // don't do anything if name hasn't changed
+            if (oldName.equals(newName))
+                return;
+
             // get the JSON
             JSONObject homeJSON = fileToJSON(c, "home.json");
 
