@@ -27,6 +27,7 @@ public class CCUtils {
     public static final int STATE_RUNNING = 2;
     public static final int STATE_COMPLETE = 3;
 
+    public static final String APP_NAME = "CodeClock";
     public final static String FILENAME = "FILENAME";
     public final static String TYPE = "TYPE";
     public final static String JOB = "JOB";

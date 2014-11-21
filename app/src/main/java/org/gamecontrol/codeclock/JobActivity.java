@@ -3,10 +3,15 @@ package org.gamecontrol.codeclock;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,7 +38,9 @@ public class JobActivity extends Activity{
 
     private final static String TAG = "org.gamecontrol.codeclock.JobActivity";
     private final Object mSynchronizedObject = new Object();
+    private static int classCount = 0;
 
+    private int mID;
     private boolean ready = false;
     private String parentProject;
     private String parentProjectUUID;
@@ -65,6 +72,7 @@ public class JobActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_job);
 
         // Get the Intent from ProjectActivity
@@ -73,6 +81,7 @@ public class JobActivity extends Activity{
         parentProjectUUID = intent.getStringExtra(CCUtils.PROJECT_UUID);
         jobName = intent.getStringExtra(CCUtils.JOB_NAME);
         jobUUID = intent.getStringExtra(CCUtils.JOB_UUID);
+        mID = getId();
 
         //TODO
         jobTimer = (Button) findViewById(R.id.jobTimerButton);
@@ -87,7 +96,9 @@ public class JobActivity extends Activity{
 
         ActionBar actionBar = getActionBar();
         if(actionBar != null) {
-            actionBar.setTitle(parentProject + " > " + currentJob.getName());
+//            actionBar.setTitle(parentProject + " > " + currentJob.getName());
+            actionBar.setTitle(currentJob.getName());
+
         }
 
         if(timeContainer == null)
@@ -143,6 +154,7 @@ public class JobActivity extends Activity{
                     //pause timer
                     timeContainer.pause();
                     stopService();
+                    clearNotification();
                 } else {
                     //change ring to running
                     Button timeButton = (Button) findViewById(R.id.jobTimerButton);
@@ -151,6 +163,7 @@ public class JobActivity extends Activity{
                     //start timer
                     timer = new Timer();
                     timeContainer.start();
+                    createNotification();
                 }
                 try {
                     OutputStream out = this.openFileOutput(jobUUID + ".json", Context.MODE_PRIVATE);
@@ -251,6 +264,56 @@ public class JobActivity extends Activity{
         Intent intent = new Intent(JobActivity.this, JobSettingsActivity.class);
         intent.putExtra(CCUtils.FILENAME, jobUUID);
         startActivity(intent);
+    }
+
+    public void createNotification(){
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher_white_icon_36x36)
+                        .setContentTitle(CCUtils.APP_NAME)
+                        .setContentText(jobName);
+
+
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, JobActivity.class);
+        resultIntent.putExtra(CCUtils.PROJECT_NAME, parentProject);
+        resultIntent.putExtra(CCUtils.PROJECT_UUID, parentProjectUUID);
+        resultIntent.putExtra(CCUtils.JOB_NAME, jobName);
+        resultIntent.putExtra(CCUtils.JOB_UUID, jobUUID);
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(JobActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+        mNotificationManager.notify(mID, mBuilder.build());
+    }
+
+    public void clearNotification(){
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(mID);
+    }
+
+    private int getId(){
+        int output = 0;
+        for(char c: jobName.toCharArray()){
+            output += (int) c;
+        }
+        return output;
     }
 
     /**

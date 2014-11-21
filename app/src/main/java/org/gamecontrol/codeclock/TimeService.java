@@ -113,6 +113,7 @@ public class TimeService extends Service {
                     job.setCurrentState(CCUtils.STATE_PAUSED);
                     long currentLap = (System.currentTimeMillis() - job.getLastStartTime());
                     job.addRunningTimes(currentLap);
+
                 }
             }
         }
