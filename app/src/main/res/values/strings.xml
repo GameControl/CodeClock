@@ -24,5 +24,6 @@
     <string name="title_activity_tag">TagActivity</string>
     <string name="title_activity_description">DescriptionActivity</string>
     <string name="project_name">Project Name:</string>
+    <string name="job_name">Job Name</string>
 
 </resources>

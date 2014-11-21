@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Handler;
 import android.widget.Button;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -38,6 +39,8 @@ public class JobActivity extends Activity{
     private final static String TAG = "org.gamecontrol.codeclock.JobActivity";
     private final Object mSynchronizedObject = new Object();
     private static int classCount = 0;
+    private static NotificationCompat.Builder mBuilder;
+    private static NotificationManager mNotificationManager;
 
     private int mID;
     private boolean ready = false;
@@ -82,7 +85,12 @@ public class JobActivity extends Activity{
         jobUUID = intent.getStringExtra(CCUtils.JOB_UUID);
         mID = getId();
 
-        //TODO
+        mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher_white_icon_36x36)
+                .setContentTitle(CCUtils.APP_NAME)
+                .setContentText(jobName);
+
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         jobTimer = (Button) findViewById(R.id.jobTimerButton);
         handler = new Handler();
     }
@@ -224,6 +232,7 @@ public class JobActivity extends Activity{
 
     private void updateTimeText() {
         jobTimer.setText(TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
+        createNotification();
     }
 
     public void startUpdateTimer() {
@@ -261,12 +270,11 @@ public class JobActivity extends Activity{
     }
 
     public void createNotification(){
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher_white_icon_36x36)
-                        .setContentTitle(CCUtils.APP_NAME)
-                        .setContentText(jobName);
 
+        RemoteViews view = new RemoteViews("org.gamecontrol.codeclock", R.layout.job_notification);
+        view.setTextViewText(R.id.job_name_notification, jobName);
+        view.setTextViewText(R.id.time_notification,TimeService.msToHourMinSec(timeContainer.getTotalElapsed()));
+        mBuilder.setContent(view);
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, JobActivity.class);
@@ -290,15 +298,11 @@ public class JobActivity extends Activity{
                 );
         mBuilder.setContentIntent(resultPendingIntent);
 
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 // mId allows you to update the notification later on.
         mNotificationManager.notify(mID, mBuilder.build());
     }
 
     public void clearNotification(){
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(mID);
     }
 
