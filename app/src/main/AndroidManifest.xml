@@ -23,7 +23,7 @@
             android:screenOrientation="portrait" />
 
         <service
-            android:name="org.gamecontrol.codeclock.TimeService"
+            android:name=".Kalima"
             android:enabled="true"
             android:exported="true" />
 
@@ -41,29 +41,35 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="org.gamecontrol.codeclock.SettingsActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="org.gamecontrol.codeclock.JobSettingsActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_job_settings" >
+            android:label="@string/title_activity_job_settings"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="org.gamecontrol.codeclock.ProjectSettingsActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_project_settings" >
+            android:label="@string/title_activity_project_settings"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="org.gamecontrol.codeclock.TagActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_tag" >
+            android:label="@string/title_activity_tag"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="org.gamecontrol.codeclock.DescriptionActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_description" >
+            android:label="@string/title_activity_description"
+            android:screenOrientation="portrait" >
         </activity>
+
+        <service
+            android:name="org.gamecontrol.codeclock.CCNotificationManager"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

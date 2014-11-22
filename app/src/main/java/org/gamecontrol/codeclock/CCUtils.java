@@ -54,6 +54,7 @@ public class CCUtils {
 
     // CCUtils local variables
     private static final String TAG = "org.gamecontrol.codeclock.CCUtils";
+    static final String BEAT = "org.gamecontrol.BEAT";
 
     // Method for saving a JSON object to a file
     public static void JSONToFile(Context c, JSONObject json, String filename) {
@@ -145,5 +146,53 @@ public class CCUtils {
         }
 
         return output;
+    }
+
+    public static long getTotalElapsed(Job job) {
+        if(job.getCurrentState() == CCUtils.STATE_RUNNING){
+            return job.getElapsed() + (System.currentTimeMillis() - job.getLastStartTime());
+        } else
+            return job.getElapsed();
+    }
+
+    public static String msToHourMinSec(long ms) {
+        if(ms == 0) {
+            return "00:00";
+        } else {
+            long seconds = (ms / 1000) % 60;
+            long minutes = (ms / 1000) / 60;
+            long hours = minutes / 60;
+
+            StringBuilder sb = new StringBuilder();
+            if(hours > 0) {
+                sb.append(hours);
+                sb.append(':');
+            }
+            if(minutes > 0) {
+                minutes = minutes % 60;
+                if(minutes >= 10) {
+                    sb.append(minutes);
+                } else {
+                    sb.append(0);
+                    sb.append(minutes);
+                }
+            } else {
+                sb.append('0');
+                sb.append('0');
+            }
+            sb.append(':');
+            if(seconds > 0) {
+                if(seconds >= 10) {
+                    sb.append(seconds);
+                } else {
+                    sb.append(0);
+                    sb.append(seconds);
+                }
+            } else {
+                sb.append('0');
+                sb.append('0');
+            }
+            return sb.toString();
+        }
     }
 }

@@ -38,6 +38,28 @@ public class Job {
         currentState = CCUtils.STATE_INIT;
     }
 
+    public Job(String jobUUID, String parentProjectUUID, String jobName, JSONObject jobJSON){
+        // construct a new job object
+        this(UUID.fromString(jobUUID), parentProjectUUID, jobName, 0 , null);
+        try {
+            // set job state
+            currentState = (jobJSON.getInt(CCUtils.STATE));
+
+            // set job start times
+            JSONArray startTimesJSON = jobJSON.getJSONArray(CCUtils.START_TIMES);
+            startTimes = CCUtils.JSONArrayToArrayListLong(startTimesJSON);
+
+            // set job running times
+            JSONArray runningTimesJSON = jobJSON.getJSONArray(CCUtils.RUNNING_TIMES);
+            runningTimes = CCUtils.JSONArrayToArrayListLong(runningTimesJSON);
+
+            // set job total elapsed time
+            elapsed = (Long.valueOf(jobJSON.get(CCUtils.ELAPSED).toString()));
+        } catch (Exception e) {
+
+        }
+    }
+
     public UUID getUUID() {
         return uuid;
     }
@@ -115,6 +137,29 @@ public class Job {
     public void setCurrentState(int currentState) {
         this.currentState = currentState;
     }
+
+    private final Object mSynchronizedObject = new Object();
+
+    public void start() {
+        if(getCurrentState() != CCUtils.STATE_RUNNING) {
+            synchronized (mSynchronizedObject) {
+                addStartTime(System.currentTimeMillis());
+                setCurrentState(CCUtils.STATE_RUNNING);
+            }
+        }
+    }
+
+    public void pause() {
+        if(getCurrentState() != CCUtils.STATE_PAUSED) {
+            synchronized (mSynchronizedObject) {
+                setCurrentState(CCUtils.STATE_PAUSED);
+                long currentLap = (System.currentTimeMillis() - getLastStartTime());
+                addRunningTimes(currentLap);
+
+            }
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {
