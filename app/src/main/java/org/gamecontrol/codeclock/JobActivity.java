@@ -200,8 +200,23 @@ public class JobActivity extends Activity {
 
     public void settingsButton(View v) {
         Intent intent = new Intent(JobActivity.this, JobSettingsActivity.class);
-        intent.putExtra(CCUtils.FILENAME, jobUUID);
-        startActivity(intent);
+        intent.putExtra(CCUtils.JOB_UUID, jobUUID);
+        intent.putExtra(CCUtils.JOB_NAME, jobName);
+        intent.putExtra(CCUtils.PROJECT_UUID, parentProjectUUID);
+        startActivityForResult(intent, CCUtils.NEW_NAME_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == CCUtils.NEW_NAME_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                jobName = data.getStringExtra(CCUtils.JOB_NAME);
+                ActionBar actionBar = getActionBar();
+                actionBar.setTitle(jobName);
+            }
+        }
     }
 
     private int getId(){

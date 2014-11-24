@@ -150,7 +150,20 @@ public class ProjectActivity extends Activity {
         Intent intent = new Intent(ProjectActivity.this, ProjectSettingsActivity.class);
         intent.putExtra(CCUtils.PROJECT_NAME, projectName);
         intent.putExtra(CCUtils.FILENAME, projectUUID);
-        startActivity(intent);
+        startActivityForResult(intent, CCUtils.NEW_NAME_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == CCUtils.NEW_NAME_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                projectName = data.getStringExtra(CCUtils.PROJECT_NAME);
+                ActionBar actionBar = getActionBar();
+                actionBar.setTitle(projectName);
+            }
+        }
     }
 
     public void addGraph() {

@@ -52,6 +52,9 @@ public class CCUtils {
     public final static String JOB_NAME = "JOB_NAME";
     public final static String PROJECT_NAME = "PROJECT_NAME";
 
+    // Request Codes
+    public static final Integer NEW_NAME_REQUEST = 1;
+
     // CCUtils local variables
     private static final String TAG = "org.gamecontrol.codeclock.CCUtils";
     static final String BEAT = "org.gamecontrol.BEAT";
@@ -68,32 +71,6 @@ public class CCUtils {
             Log.d(TAG, e.toString());
         }
         Log.d(TAG, "Wrote: " + json.toString());
-    }
-
-    public static void changeProjectName(Context c, String oldName, String newName) {
-        try {
-            // don't do anything if name hasn't changed
-            if (oldName.equals(newName))
-                return;
-
-            // get the JSON
-            JSONObject homeJSON = fileToJSON(c, "home.json");
-
-            // convert to string and replace
-            String homeJSONString = homeJSON.toString();
-            homeJSONString = homeJSONString.replace(oldName, newName);
-
-            // save modified string as the new 'home.json' file
-            OutputStream out = c.openFileOutput("home.json", Context.MODE_PRIVATE);
-            Writer writer = new OutputStreamWriter(out);
-            Log.d(TAG, "changeProjectName() writing modified JSON: " + homeJSONString);
-            writer.write(homeJSONString);
-            writer.close();
-
-        } catch (Exception e) {
-            Log.d(TAG, e.toString());
-        }
-        Log.d(TAG, "Renamed project: " + oldName + " ---> " + newName);
     }
 
     public static JSONObject fileToJSON(Context c, String filename) {
@@ -118,6 +95,63 @@ public class CCUtils {
         }
 
         return null;
+    }
+
+    public static void changeProjectName(Context c, String oldName, String newName) {
+        try {
+            // get the JSON
+            JSONObject homeJSON = fileToJSON(c, "home.json");
+
+            // convert to string and replace
+            String homeJSONString = homeJSON.toString();
+            homeJSONString = homeJSONString.replace(oldName, newName);
+
+            // save modified string as the new 'home.json' file
+            OutputStream out = c.openFileOutput("home.json", Context.MODE_PRIVATE);
+            Writer writer = new OutputStreamWriter(out);
+            Log.d(TAG, "changeProjectName() writing modified JSON: " + homeJSONString);
+            writer.write(homeJSONString);
+            writer.close();
+
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
+        Log.d(TAG, "Renamed project: " + oldName + " ---> " + newName);
+    }
+
+    public static void changeJobName(Context c, String oldName, String newName, String jobUUID, String parentProjectUIID) {
+        try {
+            // get the parent project's JSON
+            JSONObject parentProjectJSON = fileToJSON(c, parentProjectUIID + ".json");
+
+            // convert to string and replace
+            //TODO make sure this replace only happens within the JOB_NAMES array
+            String parentProjectJSONString = parentProjectJSON.toString();
+            parentProjectJSONString = parentProjectJSONString.replace(oldName, newName);
+
+            // save modified string as the new parent project file
+            OutputStream out = c.openFileOutput(parentProjectUIID + ".json", Context.MODE_PRIVATE);
+            Writer writer = new OutputStreamWriter(out);
+            Log.d(TAG, "changeJobName() writing modified *parent project* JSON: " + parentProjectJSONString);
+            writer.write(parentProjectJSONString);
+            writer.close();
+
+            // get the job's JSON and convert it to a string for replacing
+            JSONObject jobJSON = fileToJSON(c, jobUUID + ".json");
+            String jobJSONString = jobJSON.toString();
+            jobJSONString = jobJSONString.replace("\"NAME\":\"" + oldName + "\"", "\"NAME\":\"" + newName + "\"");
+
+            // save modified string as the new job file
+            out = c.openFileOutput(jobUUID + ".json", Context.MODE_PRIVATE);
+            writer = new OutputStreamWriter(out);
+            Log.d(TAG, "changeJobName() writing modified *job* JSON: " + jobJSONString);
+            writer.write(jobJSONString);
+            writer.close();
+
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
+        Log.d(TAG, "Renamed job: " + oldName + " ---> " + newName);
     }
 
     public static ArrayList<Long> JSONArrayToArrayListLong(JSONArray input) throws JSONException {
