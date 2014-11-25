@@ -31,14 +31,14 @@
             android:layout_height="fill_parent"
             android:src="@drawable/ic_action_paste"
             android:scaleType="fitCenter"
-            android:onClick="descriptionButton"/>
+            android:onClick="notesButton"/>
         <ImageButton
             android:layout_weight="1"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:src="@drawable/ic_action_edit"
             android:scaleType="fitCenter"
-            android:onClick="settingsButton"/>
+            android:onClick="detailsButton"/>
     </LinearLayout>
 
     <LinearLayout

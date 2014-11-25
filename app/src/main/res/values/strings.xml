@@ -13,8 +13,7 @@
     <string name="title_activity_create_project">CreateProjectActivity</string>
     <string name="title_activity_create_job">CreateJobActivity</string>
     <string name="estimate_hint">Pick an estimate...</string>
-    <string name="name_hint">Insert name...</string>
-    <string name="description_hint">Insert description...</string>
+    <string name="name_hint">Enter a name...</string>
     <string name="plus">+</string>
     <string name="colon">:</string>
     <string name="zero_time">00:00</string>
@@ -24,6 +23,7 @@
     <string name="title_activity_tag">TagActivity</string>
     <string name="title_activity_description">DescriptionActivity</string>
     <string name="project_name">Project Name:</string>
-    <string name="job_name">Job Name</string>
+    <string name="job_name">Job Name:</string>
+    <string name="notes_hint">Enter notes...</string>
 
 </resources>

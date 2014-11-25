@@ -45,12 +45,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="org.gamecontrol.codeclock.JobSettingsActivity"
+            android:name=".JobDetailsActivity"
             android:label="@string/title_activity_job_settings"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="org.gamecontrol.codeclock.ProjectSettingsActivity"
+            android:name=".ProjectDetailsActivity"
             android:label="@string/title_activity_project_settings"
             android:screenOrientation="portrait" >
         </activity>
@@ -60,7 +60,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="org.gamecontrol.codeclock.DescriptionActivity"
+            android:name=".NotesActivity"
             android:label="@string/title_activity_description"
             android:screenOrientation="portrait" >
         </activity>

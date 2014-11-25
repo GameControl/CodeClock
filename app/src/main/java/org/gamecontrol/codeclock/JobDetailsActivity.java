@@ -4,16 +4,14 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
 
-public class JobSettingsActivity extends Activity {
-
-    private String TAG = "org.gamecontrol.codeclock.JobSettingsActivity.java";
+public class JobDetailsActivity extends Activity {
+    private String TAG = "org.gamecontrol.codeclock.JobDetailsActivity.java";
     private String jobUUID;
     private String jobName;
     private String parentProjectUUID;
@@ -21,7 +19,7 @@ public class JobSettingsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_job_settings);
+        setContentView(R.layout.activity_job_details);
 
         // Get the Intent from ProjectActivity
         Intent intent = getIntent();
@@ -32,7 +30,7 @@ public class JobSettingsActivity extends Activity {
 
         // Set the Action Bar Title
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle(jobName + " - Settings");
+        actionBar.setTitle(jobName + " - Details");
     }
 
     @Override
@@ -68,15 +66,14 @@ public class JobSettingsActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the HomeActivity/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                HomeActivity.openSettings(JobDetailsActivity.this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

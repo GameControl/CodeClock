@@ -3,16 +3,10 @@ package org.gamecontrol.codeclock;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,13 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 
@@ -78,11 +69,8 @@ public class JobActivity extends Activity {
         initJob();
 
         ActionBar actionBar = getActionBar();
-        if(actionBar != null) {
-//            actionBar.setTitle(parentProject + " > " + currentJob.getName());
-            actionBar.setTitle(currentJob.getName());
-
-        }
+        if(actionBar != null)
+            actionBar.setTitle(parentProject + " > " + currentJob.getName());
 
         if(currentJob.getCurrentState() == CCUtils.STATE_RUNNING){
             Button timeButton = (Button) findViewById(R.id.jobTimerButton);
@@ -186,20 +174,21 @@ public class JobActivity extends Activity {
 
     public void tagButton(View v) {
         Intent intent = new Intent(JobActivity.this, TagActivity.class);
+        intent.putExtra(CCUtils.NAME, jobName);
         intent.putExtra(CCUtils.FILENAME, jobUUID);
         intent.putExtra(CCUtils.TYPE, CCUtils.JOB);
         startActivity(intent);
     }
 
-    public void descriptionButton(View v) {
-        Intent intent = new Intent(JobActivity.this, DescriptionActivity.class);
+    public void notesButton(View v) {
+        Intent intent = new Intent(JobActivity.this, NotesActivity.class);
+        intent.putExtra(CCUtils.NAME, jobName);
         intent.putExtra(CCUtils.FILENAME, jobUUID);
-        intent.putExtra(CCUtils.TYPE, CCUtils.JOB);
         startActivity(intent);
     }
 
-    public void settingsButton(View v) {
-        Intent intent = new Intent(JobActivity.this, JobSettingsActivity.class);
+    public void detailsButton(View v) {
+        Intent intent = new Intent(JobActivity.this, JobDetailsActivity.class);
         intent.putExtra(CCUtils.JOB_UUID, jobUUID);
         intent.putExtra(CCUtils.JOB_NAME, jobName);
         intent.putExtra(CCUtils.PROJECT_UUID, parentProjectUUID);

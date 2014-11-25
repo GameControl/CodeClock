@@ -1,18 +1,32 @@
 package org.gamecontrol.codeclock;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class TagActivity extends Activity {
-
+    private String name;
+    private String filename;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag);
+
+        // Get the Intent from ProjectActivity
+        Intent intent = getIntent();
+        name = intent.getStringExtra(CCUtils.NAME);
+        filename = intent.getStringExtra(CCUtils.FILENAME);
+        type = intent.getStringExtra(CCUtils.TYPE);
+
+        // Set the Action Bar Title
+        ActionBar actionBar = getActionBar();
+        actionBar.setTitle(name + " - Tags");
     }
 
 
@@ -26,15 +40,14 @@ public class TagActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the HomeActivity/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                HomeActivity.openSettings(TagActivity.this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

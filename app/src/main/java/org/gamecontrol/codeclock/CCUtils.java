@@ -97,6 +97,25 @@ public class CCUtils {
         return null;
     }
 
+    public static void changeNotes(Context c, String filename, String new_notes) {
+        Log.d(TAG, "New Notes: " + new_notes);
+        Log.d(TAG, "Filename: " + filename);
+        try {
+            // Get the JSON
+            JSONObject jsonObject = fileToJSON(c, filename);
+
+            // Get the old notes and update them
+            String old_notes = jsonObject.getString(CCUtils.NOTES);
+            Log.d(TAG, "Old Notes: " + old_notes);
+            jsonObject.put(CCUtils.NOTES, new_notes);
+
+            // Save the new notes
+            JSONToFile(c, jsonObject, filename);
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
+    }
+
     public static void changeProjectName(Context c, String oldName, String newName) {
         try {
             // get the JSON

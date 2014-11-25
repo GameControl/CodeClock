@@ -19,7 +19,6 @@ import com.jjoe64.graphview.GraphViewSeries;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -134,20 +133,21 @@ public class ProjectActivity extends Activity {
 
     public void tagButton(View v) {
         Intent intent = new Intent(ProjectActivity.this, TagActivity.class);
+        intent.putExtra(CCUtils.NAME, projectName);
         intent.putExtra(CCUtils.FILENAME, projectUUID);
         intent.putExtra(CCUtils.TYPE, CCUtils.PROJECT);
         startActivity(intent);
     }
 
-    public void descriptionButton(View v) {
-        Intent intent = new Intent(ProjectActivity.this, DescriptionActivity.class);
+    public void notesButton(View v) {
+        Intent intent = new Intent(ProjectActivity.this, NotesActivity.class);
+        intent.putExtra(CCUtils.NAME, projectName);
         intent.putExtra(CCUtils.FILENAME, projectUUID);
-        intent.putExtra(CCUtils.TYPE, CCUtils.PROJECT);
         startActivity(intent);
     }
 
-    public void settingsButton(View v) {
-        Intent intent = new Intent(ProjectActivity.this, ProjectSettingsActivity.class);
+    public void detailsButton(View v) {
+        Intent intent = new Intent(ProjectActivity.this, ProjectDetailsActivity.class);
         intent.putExtra(CCUtils.PROJECT_NAME, projectName);
         intent.putExtra(CCUtils.FILENAME, projectUUID);
         startActivityForResult(intent, CCUtils.NEW_NAME_REQUEST);

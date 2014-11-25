@@ -4,23 +4,21 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
 
-public class ProjectSettingsActivity extends Activity {
-
-    private String TAG = "org.gamecontrol.codeclock.ProjectSettingsActivity.java";
+public class ProjectDetailsActivity extends Activity {
+    private String TAG = "org.gamecontrol.codeclock.ProjectDetailsActivity.java";
     private String filename;
     private String projectName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_project_settings);
+        setContentView(R.layout.activity_project_details);
 
         // Get the Intent from ProjectActivity
         Intent intent = getIntent();
@@ -29,7 +27,7 @@ public class ProjectSettingsActivity extends Activity {
 
         // Set the Action Bar Title
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle(projectName + " - Settings");
+        actionBar.setTitle(projectName + " - Details");
     }
 
     @Override
@@ -65,15 +63,14 @@ public class ProjectSettingsActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the HomeActivity/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                HomeActivity.openSettings(ProjectDetailsActivity.this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }
