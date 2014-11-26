@@ -4,16 +4,19 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class ProjectDetailsActivity extends Activity {
     private String TAG = "org.gamecontrol.codeclock.ProjectDetailsActivity.java";
     private String filename;
     private String projectName;
+    private static boolean clicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +42,30 @@ public class ProjectDetailsActivity extends Activity {
     }
 
     public void updateSettings(View v) {
-        //TODO prevent empty and dupe names
-        EditText newProjectName = (EditText) findViewById(R.id.editProjectName);
-        String newProjectNameString = newProjectName.getText().toString();
+        if(!clicked) {
+            clicked = true;
+            //TODO prevent dupe names
+            EditText newProjectName = (EditText) findViewById(R.id.editProjectName);
+            String newProjectNameString = newProjectName.getText().toString();
 
-        if (!projectName.equals(newProjectNameString))
-            CCUtils.changeProjectName(this.getApplicationContext(), projectName, newProjectNameString);
+            // Warn and prevent user from creating a project with an empty name
+            if (newProjectNameString.equals("")) {
+                Toast toast = Toast.makeText(this, "Please enter a project name.", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP, 0, 250);
+                toast.show();
+                clicked = false;
+                return;
+            }
 
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(CCUtils.PROJECT_NAME, newProjectNameString);
-        setResult(Activity.RESULT_OK, resultIntent);
+            if (!projectName.equals(newProjectNameString))
+                CCUtils.changeProjectName(this.getApplicationContext(), projectName, newProjectNameString);
 
-        finish();
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(CCUtils.PROJECT_NAME, newProjectNameString);
+            setResult(Activity.RESULT_OK, resultIntent);
+
+            finish();
+        }
     }
 
     @Override

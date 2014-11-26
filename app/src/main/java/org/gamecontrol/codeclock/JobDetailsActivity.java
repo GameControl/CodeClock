@@ -4,10 +4,12 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class JobDetailsActivity extends Activity {
@@ -15,6 +17,8 @@ public class JobDetailsActivity extends Activity {
     private String jobUUID;
     private String jobName;
     private String parentProjectUUID;
+
+    private static boolean clicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +46,30 @@ public class JobDetailsActivity extends Activity {
     }
 
     public void updateSettings(View v) {
-        //TODO prevent empty and dupe names
-        EditText newJobName = (EditText) findViewById(R.id.editJobName);
-        String newJobNameString = newJobName.getText().toString();
+        if(!clicked) {
+            clicked = true;
+            //TODO prevent dupe names
+            EditText newJobName = (EditText) findViewById(R.id.editJobName);
+            String newJobNameString = newJobName.getText().toString();
 
-        if (!jobName.equals(newJobNameString))
-            CCUtils.changeJobName(this.getApplicationContext(), jobName, newJobNameString, jobUUID, parentProjectUUID);
+            // Warn and prevent user from creating a project with an empty name
+            if (newJobNameString.equals("")) {
+                Toast toast = Toast.makeText(this, "Please enter a job name.", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP, 0, 250);
+                toast.show();
+                clicked = false;
+                return;
+            }
 
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(CCUtils.JOB_NAME, newJobNameString);
-        setResult(Activity.RESULT_OK, resultIntent);
+            if (!jobName.equals(newJobNameString))
+                CCUtils.changeJobName(this.getApplicationContext(), jobName, newJobNameString, jobUUID, parentProjectUUID);
 
-        finish();
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(CCUtils.JOB_NAME, newJobNameString);
+            setResult(Activity.RESULT_OK, resultIntent);
+
+            finish();
+        }
     }
 
     @Override

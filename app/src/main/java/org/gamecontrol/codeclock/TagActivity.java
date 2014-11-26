@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -12,6 +13,8 @@ public class TagActivity extends Activity {
     private String name;
     private String filename;
     private String type;
+
+    private final static String TAG = "org.gamecontrol.codeclock.JobActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,14 @@ public class TagActivity extends Activity {
         // Set the Action Bar Title
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(name + " - Tags");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+
+        TagManager tagManager = TagManager.getTagManager(this.getApplicationContext());
+        Log.d(TAG, tagManager.getSetOfTags().toString());
     }
 
 

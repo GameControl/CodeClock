@@ -2,7 +2,6 @@ package org.gamecontrol.codeclock;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,13 +16,7 @@ import android.widget.GridView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 
 
@@ -88,6 +81,10 @@ public class HomeActivity extends Activity {
                 Log.d(HomeActivity.TAG, "INIT home.json :" + empty.toString());
                 CCUtils.JSONToFile(this.getApplicationContext(), empty, "home.json");
             }
+
+            // Create tag manager
+            TagManager tagManager = TagManager.getTagManager(this.getApplicationContext());
+
         } catch (Exception e){
             Log.d(TAG, e.toString());
         }
