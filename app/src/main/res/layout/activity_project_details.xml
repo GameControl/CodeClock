@@ -22,7 +22,7 @@
 
         <TextView
             android:text="@string/project_name"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

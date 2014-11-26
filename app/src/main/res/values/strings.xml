@@ -25,5 +25,9 @@
     <string name="project_name">Project Name:</string>
     <string name="job_name">Job Name:</string>
     <string name="notes_hint">Enter notes...</string>
+    <string name="add_tag">Add Tag:</string>
+    <string name="new_tag_hint">Enter a new tag...</string>
+    <string name="common_tags">Common Tags:</string>
+    <string name="current_tags">Current Tags:</string>
 
 </resources>
