@@ -37,11 +37,12 @@ public class JobActivity extends Activity {
     private Job currentJob;
     private JobBeatReceiver beatReceiver;
     private CCNotificationManager mCCNotificationManager;
+    private boolean beatRegistered;
 
     @Override
     protected void onPause() {
         ready = false;
-        unregisterReceiver(beatReceiver);
+        unregisterReciever();
         super.onPause();
     }
 
@@ -58,7 +59,7 @@ public class JobActivity extends Activity {
         jobName = intent.getStringExtra(CCUtils.JOB_NAME);
         jobUUID = intent.getStringExtra(CCUtils.JOB_UUID);
         mID = getId();
-
+        beatRegistered = false;
         jobTimer = (Button) findViewById(R.id.jobTimerButton);
     }
 
@@ -67,23 +68,36 @@ public class JobActivity extends Activity {
         super.onResume();  // Always call the superclass method first
 
         initJob();
-
+        update();
         ActionBar actionBar = getActionBar();
-        if(actionBar != null)
+        if(actionBar != null) {
             actionBar.setTitle(parentProject + " > " + currentJob.getName());
+        }
 
         if(currentJob.getCurrentState() == CCUtils.STATE_RUNNING){
+            startHeart();
             Button timeButton = (Button) findViewById(R.id.jobTimerButton);
             Drawable img = this.getResources().getDrawable(R.drawable.dial_running);
             timeButton.setBackground(img);
         }
-
-        // Register the receiver
-        IntentFilter filter = new IntentFilter(CCUtils.BEAT);
-        beatReceiver = new JobBeatReceiver(this);
-        registerReceiver(beatReceiver, filter);
-
         ready = true;
+    }
+
+    private void registerReciever(){
+        // Register the receiver
+        if(!beatRegistered) {
+            IntentFilter filter = new IntentFilter(CCUtils.BEAT);
+            beatReceiver = new JobBeatReceiver(this);
+            registerReceiver(beatReceiver, filter);
+            beatRegistered = true;
+        }
+    }
+
+    private void unregisterReciever(){
+        if(beatRegistered) {
+            unregisterReceiver(beatReceiver);
+            beatRegistered = false;
+        }
     }
 
     @Override
@@ -140,11 +154,13 @@ public class JobActivity extends Activity {
     }
 
     private void startHeart() {
+        registerReciever();
         Intent intent = new Intent(JobActivity.this, Kalima.class);
         JobActivity.this.startService(intent);
     }
 
     private void stopHeart() {
+        unregisterReciever();
         Intent intent = new Intent(JobActivity.this, Kalima.class);
         JobActivity.this.stopService(intent);
     }
