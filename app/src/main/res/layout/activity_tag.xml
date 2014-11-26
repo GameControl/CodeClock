@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:layout_above="@id/addTagText"
+        android:layout_above="@+id/addTagText"
         android:weightSum="2" >
 
         <LinearLayout
