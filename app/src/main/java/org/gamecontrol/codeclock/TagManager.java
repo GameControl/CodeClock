@@ -74,7 +74,6 @@ public class TagManager{
                 return;
         saveTagManager();
     }
-    //TODO need method that adds tag without incrementing
 
     // use this when removing a tag from a project or job
     public void removeTag(String tag, Boolean isJob) {
