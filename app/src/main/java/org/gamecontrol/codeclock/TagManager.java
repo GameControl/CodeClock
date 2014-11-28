@@ -6,8 +6,10 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -22,6 +24,10 @@ public class TagManager{
     private HashMap<String, Integer> tags;
     private Context context;
     private static final String TAG = "org.gamecontrol.codeclock.TagManager";
+    private static final List<String> defaultTags =
+            Arrays.asList("java", "c++", "c", "c#", "php", "javascript", "haskell", "perl",
+                    "python", "ruby", "scala", "html", "css", "bug_fix", "new_feature",
+                    "update_feature", "refactor", "android", "ios");
 
     private TagManager(Context c) {
         tags = new HashMap<String, Integer>();
@@ -30,25 +36,7 @@ public class TagManager{
         try {
             File file = c.getFileStreamPath("tagmanager.json");
             if (!file.exists()) {
-                addTag("java");
-                addTag("c++");
-                addTag("c");
-                addTag("c#");
-                addTag("php");
-                addTag("javascript");
-                addTag("haskell");
-                addTag("perl");
-                addTag("python");
-                addTag("scala");
-                addTag("ruby");
-                addTag("html");
-                addTag("css");
-                addTag("bug_fix");
-                addTag("new_feature");
-                addTag("update_feature");
-                addTag("refactor");
-                addTag("android");
-                addTag("ios");
+                addDefaultTags();
                 JSONObject init = new JSONObject(tags);
                 Log.d(TAG, "INIT tagmanager.json :" + init.toString());
                 CCUtils.JSONToFile(c, init, "tagmanager.json");
@@ -71,12 +59,46 @@ public class TagManager{
         return tagManager;
     }
 
+    //
     public void addTag(String tag) {
         tag = tag.toLowerCase();
         if(!tags.containsKey(tag))
             tags.put(tag, 1);
         else
             tags.put(tag, tags.get(tag)+1);
+        saveTagManager();
+    }
+    //TODO need method that adds tag without incrementing
+
+    // use this when removing a tag from a project or job
+    public void lowerTagCount(String tag) {
+        tag = tag.toLowerCase();
+        if (tags.containsKey(tag)) {
+            if (tags.get(tag) > 0)
+                tags.put(tag, tags.get(tag) - 1);
+        }
+        saveTagManager();
+    }
+
+    // for completely removing a tag from the list, it's count must be 0
+    private void removeTag(String tag) {
+        tag = tag.toLowerCase();
+        if (tags.get(tag) > 0)
+            tags.remove(tag);
+        else {
+            Log.d(TAG, "tried to remove tag with count greater than zero");
+        }
+        saveTagManager();
+    }
+
+    // for adding tags to the HashMap during
+    // app init, keep their 'count' at 0
+    private void addDefaultTags() {
+        for (String tag : defaultTags) {
+            tag = tag.toLowerCase();
+            if (!tags.containsKey(tag))
+                tags.put(tag, 0);
+        }
         saveTagManager();
     }
 

@@ -9,8 +9,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -185,10 +183,16 @@ public class CCUtils {
             // get the parent project's JSON
             JSONObject parentProjectJSON = fileToJSON(c, parentProjectUIID + ".json");
 
-            // convert to string and replace
-            //TODO make sure this replace only happens within the JOB_NAMES array
+            // get the job names array and replace the oldName with the newName
+            JSONArray jobNamesArrayJSON = parentProjectJSON.getJSONArray(CCUtils.JOB_NAMES);
+            jobNamesArrayJSON = replaceStringInJSONArray(oldName, newName, jobNamesArrayJSON);
+
+            // remove old array and put new one in
+            parentProjectJSON.remove(CCUtils.JOB_NAMES);
+            parentProjectJSON.put(CCUtils.JOB_NAMES, jobNamesArrayJSON);
+
             String parentProjectJSONString = parentProjectJSON.toString();
-            parentProjectJSONString = parentProjectJSONString.replace(oldName, newName);
+
 
             // save modified string as the new parent project file
             OutputStream out = c.openFileOutput(parentProjectUIID + ".json", Context.MODE_PRIVATE);
@@ -213,6 +217,16 @@ public class CCUtils {
             Log.d(TAG, e.toString());
         }
         Log.d(TAG, "Renamed job: " + oldName + " ---> " + newName);
+    }
+
+    public static JSONArray replaceStringInJSONArray(String oldVal, String newVal, JSONArray jsonArray) throws JSONException {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            if (jsonArray.getString(i).equals(oldVal)) {
+                jsonArray.put(i, newVal);
+                break;
+            }
+        }
+        return jsonArray;
     }
 
     public static ArrayList<Long> JSONArrayToArrayListLong(JSONArray input) throws JSONException {
