@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -115,7 +116,7 @@ public class CCUtils {
         }
     }
 
-    public static void addTag(Context c, String filename, String new_tag) {
+    public static void addTag(Context c, String filename, String new_tag, boolean isJob) {
         Log.d(TAG, "New Tag: " + new_tag);
         Log.d(TAG, "Filename: " + filename);
         try {
@@ -130,13 +131,13 @@ public class CCUtils {
             JSONToFile(c, jsonObject, filename);
 
             // Update the TagManager
-            TagManager.getTagManager(c).addTag(new_tag);
+            TagManager.getTagManager(c).addTag(new_tag, isJob);
         } catch (Exception e) {
             Log.d(TAG, e.toString());
         }
     }
 
-    public static void removeTag(Context c, String filename, int index) {
+    public static void removeTag(Context c, String filename, int index, boolean isJob) {
         Log.d(TAG, "Removing Tag at index: " + index);
         Log.d(TAG, "Filename: " + filename);
         try {
@@ -144,8 +145,12 @@ public class CCUtils {
             JSONObject jsonObject = fileToJSON(c, filename);
 
             // Get the current tags and add the new one
-            JSONArray tags = jsonObject.getJSONArray(CCUtils.TAGS);
-            // TODO: tags.remove(index);
+            ArrayList<String> tags = CCUtils.JSONArrayToArrayListString(jsonObject.getJSONArray(CCUtils.TAGS));
+            //TODO
+            TagManager.getTagManager(c).removeTag(tags.get(index), isJob);
+            tags.remove(index);
+            jsonObject.remove(CCUtils.TAGS);
+            jsonObject.put(CCUtils.TAGS, CCUtils.ArrayListStringToJSONArray(tags));
 
             // Save the tags to file
             JSONToFile(c, jsonObject, filename);

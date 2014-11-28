@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 
 import org.json.JSONArray;
@@ -99,6 +100,14 @@ public class TagActivity extends Activity {
         for(String tag : currentTags) {
             commonTags.remove(tag);
         }
+    }
+
+    public void createTag(View v) {
+        EditText input = (EditText) findViewById(R.id.newTagName);
+        String newTag = input.getText().toString();
+        CCUtils.addTag(TagActivity.this, filename, newTag, type.equals(CCUtils.JOB));
+        refreshGridViews();
+        finish();
     }
 
     @Override
