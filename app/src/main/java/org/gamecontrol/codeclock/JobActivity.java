@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -32,8 +33,12 @@ public class JobActivity extends Activity {
     private String parentProjectUUID;
     private String jobName;
     private String jobUUID;
+    private long estimate;
 
     private Button jobTimer;
+    private TextView estimateText;
+    private TextView actualText;
+
     private Job currentJob;
     private JobBeatReceiver beatReceiver;
     private CCNotificationManager mCCNotificationManager;
@@ -61,6 +66,9 @@ public class JobActivity extends Activity {
         mID = getId();
         beatRegistered = false;
         jobTimer = (Button) findViewById(R.id.jobTimerButton);
+        actualText = (TextView) findViewById(R.id.actualText);
+        estimateText = (TextView) findViewById(R.id.estimateText);
+
     }
 
     @Override
@@ -68,7 +76,6 @@ public class JobActivity extends Activity {
         super.onResume();  // Always call the superclass method first
 
         initJob();
-        update();
         ActionBar actionBar = getActionBar();
         if(actionBar != null) {
             actionBar.setTitle(parentProject + " > " + currentJob.getName());
@@ -80,6 +87,10 @@ public class JobActivity extends Activity {
             Drawable img = this.getResources().getDrawable(R.drawable.dial_running);
             timeButton.setBackground(img);
         }
+        estimate = currentJob.getEstimate();
+        Log.d(TAG, "Estimate: " + estimate);
+        estimateText.setText(CCUtils.msToHourMinSec(estimate));
+        update();
         ready = true;
     }
 
@@ -105,20 +116,6 @@ public class JobActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.job, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the HomeActivity/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                HomeActivity.openSettings(JobActivity.this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     public void toggleTimer(View view) {
@@ -172,6 +169,7 @@ public class JobActivity extends Activity {
 
             // construct a new job object
             currentJob = new Job(jobUUID , parentProjectUUID, jobName, jobJSON);
+            currentJob.setEstimate(jobJSON.getLong(CCUtils.ESTIMATE));
 
         } catch (Exception e) {
             Log.d(TAG, "caught exception: " + e.toString());
@@ -185,7 +183,19 @@ public class JobActivity extends Activity {
     }
 
     public void update() {
-        jobTimer.setText(CCUtils.msToHourMinSec(CCUtils.getTotalElapsed(currentJob)));
+        long elapsed = CCUtils.getTotalElapsed(currentJob);
+
+        jobTimer.setText(CCUtils.msToHourMinSec(elapsed));
+        long overUnder = estimate - elapsed;
+        if( overUnder<0 ){
+            actualText.setText("- " + CCUtils.msToHourMinSec(-1*overUnder));
+            actualText.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+        } else {
+            actualText.setText(CCUtils.msToHourMinSec(overUnder));
+            actualText.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+
+        }
+
     }
 
     public void tagButton(View v) {

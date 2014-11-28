@@ -92,20 +92,6 @@ public class ProjectActivity extends Activity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                HomeActivity.openSettings(ProjectActivity.this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     public void createJob(View view){
         Intent intent = new Intent(ProjectActivity.this, CreateJobActivity.class);
         intent.putExtra(CCUtils.PROJECT_UUID, projectUUID);

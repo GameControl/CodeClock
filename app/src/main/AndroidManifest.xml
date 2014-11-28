@@ -40,11 +40,6 @@
             android:label="@string/title_activity_create_job"
             android:screenOrientation="portrait" />
         <activity
-            android:name="org.gamecontrol.codeclock.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".JobDetailsActivity"
             android:label="@string/title_activity_job_settings"
             android:screenOrientation="portrait" >
