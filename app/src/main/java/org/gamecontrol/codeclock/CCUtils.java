@@ -116,6 +116,48 @@ public class CCUtils {
         }
     }
 
+    public static void addTag(Context c, String filename, String new_tag) {
+        Log.d(TAG, "New Tag: " + new_tag);
+        Log.d(TAG, "Filename: " + filename);
+        try {
+            // Get the JSON
+            JSONObject jsonObject = fileToJSON(c, filename);
+
+            // Get the current tags and add the new one
+            JSONArray tags = jsonObject.getJSONArray(CCUtils.TAGS);
+            tags.put(new_tag);
+
+            // Save the tags to file
+            JSONToFile(c, jsonObject, filename);
+
+            // Update the TagManager
+            TagManager.getTagManager(c).addTag(new_tag);
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
+    }
+
+    public static void removeTag(Context c, String filename, int index) {
+        Log.d(TAG, "Removing Tag at index: " + index);
+        Log.d(TAG, "Filename: " + filename);
+        try {
+            // Get the JSON
+            JSONObject jsonObject = fileToJSON(c, filename);
+
+            // Get the current tags and add the new one
+            JSONArray tags = jsonObject.getJSONArray(CCUtils.TAGS);
+            // TODO: tags.remove(index);
+
+            // Save the tags to file
+            JSONToFile(c, jsonObject, filename);
+
+            // Update the TagManager
+            //TagManager.getTagManager(c).addTag(new_tag);
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
+    }
+
     public static void changeProjectName(Context c, String oldName, String newName) {
         try {
             // get the JSON

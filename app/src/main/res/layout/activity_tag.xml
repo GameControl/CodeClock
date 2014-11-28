@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:layout_above="@id/addTagText"
+        android:layout_above="@+id/addTagText"
         android:weightSum="2" >
 
         <LinearLayout
@@ -28,7 +28,7 @@
                 android:id="@+id/CurrentTagsGridView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:numColumns="3" />
+                android:numColumns="2" />
         </LinearLayout>
 
         <View
@@ -52,7 +52,7 @@
                 android:id="@+id/CommonTagsGridView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:numColumns="3" />
+                android:numColumns="2" />
         </LinearLayout>
     </LinearLayout>
 
