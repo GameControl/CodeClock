@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 /**
  * Created by tony on 10/25/2014.
+ * quack
  */
 public class CCUtils {
     // APP CONSTANTS
@@ -151,7 +152,6 @@ public class CCUtils {
 
             String parentProjectJSONString = parentProjectJSON.toString();
 
-
             // save modified string as the new parent project file
             OutputStream out = c.openFileOutput(parentProjectUIID + ".json", Context.MODE_PRIVATE);
             Writer writer = new OutputStreamWriter(out);
@@ -177,7 +177,7 @@ public class CCUtils {
         Log.d(TAG, "Renamed job: " + oldName + " ---> " + newName);
     }
 
-    public static JSONArray replaceStringInJSONArray(String oldVal, String newVal, JSONArray jsonArray) throws JSONException {
+    private static JSONArray replaceStringInJSONArray(String oldVal, String newVal, JSONArray jsonArray) throws JSONException {
         for (int i = 0; i < jsonArray.length(); i++) {
             if (jsonArray.getString(i).equals(oldVal)) {
                 jsonArray.put(i, newVal);
