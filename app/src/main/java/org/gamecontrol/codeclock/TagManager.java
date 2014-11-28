@@ -60,22 +60,30 @@ public class TagManager{
     }
 
     //
-    public void addTag(String tag) {
+    public void addTag(String tag, Boolean isJob) {
         tag = tag.toLowerCase();
         if(!tags.containsKey(tag))
-            tags.put(tag, 1);
+            if (isJob)
+                tags.put(tag, 1);
+            else
+                tags.put(tag, 0);
         else
-            tags.put(tag, tags.get(tag)+1);
+            if (!isJob)
+                tags.put(tag, tags.get(tag)+1);
+            else
+                return;
         saveTagManager();
     }
     //TODO need method that adds tag without incrementing
 
     // use this when removing a tag from a project or job
-    public void lowerTagCount(String tag) {
+    public void lowerTagCount(String tag, Boolean isJob) {
+        if (isJob)
+            return;
         tag = tag.toLowerCase();
         if (tags.containsKey(tag)) {
             if (tags.get(tag) > 0)
-                tags.put(tag, tags.get(tag) - 1);
+                    tags.put(tag, tags.get(tag) - 1);
         }
         saveTagManager();
     }
