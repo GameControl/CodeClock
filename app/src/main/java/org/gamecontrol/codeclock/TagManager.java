@@ -77,7 +77,7 @@ public class TagManager{
     //TODO need method that adds tag without incrementing
 
     // use this when removing a tag from a project or job
-    public void lowerTagCount(String tag, Boolean isJob) {
+    public void removeTag(String tag, Boolean isJob) {
         if (isJob)
             return;
         tag = tag.toLowerCase();
@@ -88,16 +88,16 @@ public class TagManager{
         saveTagManager();
     }
 
-    // for completely removing a tag from the list, it's count must be 0
-    private void removeTag(String tag) {
-        tag = tag.toLowerCase();
-        if (tags.get(tag) > 0)
-            tags.remove(tag);
-        else {
-            Log.d(TAG, "tried to remove tag with count greater than zero");
-        }
-        saveTagManager();
-    }
+//    // for completely removing a tag from the list, it's count must be 0
+//    private void removeTag(String tag) {
+//        tag = tag.toLowerCase();
+//        if (tags.get(tag) > 0)
+//            tags.remove(tag);
+//        else {
+//            Log.d(TAG, "tried to remove tag with count greater than zero");
+//        }
+//        saveTagManager();
+//    }
 
     // for adding tags to the HashMap during
     // app init, keep their 'count' at 0
