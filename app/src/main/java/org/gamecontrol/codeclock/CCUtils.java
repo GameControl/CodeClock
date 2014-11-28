@@ -257,6 +257,18 @@ public class CCUtils {
         return output;
     }
 
+    public static JSONArray ArrayListStringToJSONArray(ArrayList<String> input) {
+        if (input == null)
+            return null;
+
+        JSONArray output = new JSONArray();
+        for (String s : input) {
+            output.put(s);
+        }
+
+        return output;
+    }
+
     public static long getTotalElapsed(Job job) {
         if(job.getCurrentState() == CCUtils.STATE_RUNNING){
             return job.getElapsed() + (System.currentTimeMillis() - job.getLastStartTime());
