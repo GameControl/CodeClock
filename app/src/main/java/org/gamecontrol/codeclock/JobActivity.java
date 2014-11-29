@@ -230,7 +230,7 @@ public class JobActivity extends Activity {
         jobTimer.setText(CCUtils.msToHourMinSec(elapsed));
         long overUnder = estimate - elapsed;
         if( overUnder<0 ){
-            actualText.setText("- " + CCUtils.msToHourMinSec(-1*overUnder));
+            actualText.setText(CCUtils.msToHourMinSec(-1*overUnder));
             actualText.setTextColor(getResources().getColor(android.R.color.holo_red_light));
         } else {
             actualText.setText(CCUtils.msToHourMinSec(overUnder));

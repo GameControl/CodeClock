@@ -98,6 +98,49 @@ public class CCUtils {
         return null;
     }
 
+    public static void harvestTimes(Context c, String projectFilename,
+                                    ArrayList<Long> startTimesBucket,
+                                    ArrayList<Long> runningTimesBucket,
+                                    ArrayList<Integer> statuses){
+        try{
+            //open project
+            JSONObject projectJSON = fileToJSON(c, projectFilename);
+            JSONArray jobUUIDsJSON = projectJSON.getJSONArray(CCUtils.JOB_UUIDS);
+            JSONArray jobNamesJSON = projectJSON.getJSONArray(CCUtils.JOB_NAMES);
+            //get list of job uuids
+            ArrayList<String> jobUUIDs = CCUtils.JSONArrayToArrayListString(jobUUIDsJSON);
+            ArrayList<String> jobNames = CCUtils.JSONArrayToArrayListString(jobNamesJSON);
+
+            //open each
+
+            for(int i = 0; i < jobUUIDs.size(); i++) {
+                // get JSON of job file
+                JSONObject jobJSON = CCUtils.fileToJSON(c.getApplicationContext(), jobUUIDs.get(i) + ".json");
+
+                // construct a new job object
+                Job currentJob = new Job(jobUUIDs.get(i) , projectFilename, jobNames.get(i), jobJSON);
+                currentJob.setEstimate(jobJSON.getLong(CCUtils.ESTIMATE));
+                //get running times and start times
+                ArrayList<Long> startTimes = currentJob.getStartTimes();
+                ArrayList<Long> runningTime = currentJob.getRunningTimes();
+                //If running, remove last start time
+                if(currentJob.getCurrentState() == CCUtils.STATE_RUNNING){
+                    startTimes.remove(startTimes.size()-1);
+                }
+                //add to bucket
+                startTimesBucket.addAll(startTimes);
+                runningTimesBucket.addAll(runningTime);
+                statuses.add(currentJob.getCurrentState());
+                //get status
+            }
+
+
+
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+    }
+
     public static void changeNotes(Context c, String filename, String new_notes) {
         Log.d(TAG, "New Notes: " + new_notes);
         Log.d(TAG, "Filename: " + filename);

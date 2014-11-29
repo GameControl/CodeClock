@@ -77,7 +77,6 @@ public class ProjectActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-
         initProject();
         refreshListView();
     }
