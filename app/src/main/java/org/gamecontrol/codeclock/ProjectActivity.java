@@ -30,6 +30,9 @@ public class ProjectActivity extends Activity {
     private String projectName;
     private String projectUUID;
 
+    private ArrayList<Integer> statuses;
+    private ArrayList<Long> startTimes;
+    private ArrayList<Long> runningTimes;
     private Project project;
 
     private void initProject(){
@@ -52,12 +55,12 @@ public class ProjectActivity extends Activity {
             // construct a new Project object with the information we just read
             project = new Project(UUID.fromString(projectUUID), tags, projectJSON.getString(CCUtils.NOTES), jobUUIDs, jobNames);
 
-            ArrayList<Long> startTimes = new ArrayList<Long>();
-            ArrayList<Long> runningTimes = new ArrayList<Long>();
-            ArrayList<Integer> status = new ArrayList<Integer>();
+            startTimes = new ArrayList<Long>();
+            runningTimes = new ArrayList<Long>();
+            statuses = new ArrayList<Integer>();
 
-            CCUtils.harvestTimes(ProjectActivity.this, projectUUID, startTimes, runningTimes, status);
-            
+            CCUtils.harvestTimes(ProjectActivity.this, projectUUID, startTimes, runningTimes, statuses);
+
             addGraph();
             ActionBar actionBar = getActionBar();
             if(actionBar!=null) {
@@ -152,7 +155,8 @@ public class ProjectActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 projectName = data.getStringExtra(CCUtils.PROJECT_NAME);
                 ActionBar actionBar = getActionBar();
-                actionBar.setTitle(projectName);
+                if(actionBar != null)
+                    actionBar.setTitle(projectName);
             }
         }
     }
