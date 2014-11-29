@@ -104,7 +104,7 @@ public class CCUtils {
                                     ArrayList<Integer> statuses){
         try{
             //open project
-            JSONObject projectJSON = fileToJSON(c, projectFilename);
+            JSONObject projectJSON = fileToJSON(c, projectFilename + ".json");
             JSONArray jobUUIDsJSON = projectJSON.getJSONArray(CCUtils.JOB_UUIDS);
             JSONArray jobNamesJSON = projectJSON.getJSONArray(CCUtils.JOB_NAMES);
             //get list of job uuids

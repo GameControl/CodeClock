@@ -110,7 +110,7 @@ public class ProjectActivity extends Activity {
     private void refreshListView() {
         Log.d(TAG, project.getJobNames().toString());
         ListView listView = (ListView) findViewById(R.id.jobListView);
-        listView.setAdapter(new JobAdapter(this, project.getJobNames()));
+        listView.setAdapter(new JobAdapter(this, project.getJobNames(), statuses));
         Log.d(TAG, project.getJobNames().toString());
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
