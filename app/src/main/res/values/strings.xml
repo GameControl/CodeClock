@@ -8,7 +8,8 @@
     <string name="job2">job2</string>
     <string name="job3">job3</string>
     <string name="title_activity_job">job</string>
-    <string name="mark_finished">Mark Complete</string>
+    <string name="unfinished">Mark Complete</string>
+    <string name="mark_finished">Completed</string>
     <string name="title_activity_project">ProjectActivity</string>
     <string name="title_activity_create_project">CreateProjectActivity</string>
     <string name="title_activity_create_job">CreateJobActivity</string>

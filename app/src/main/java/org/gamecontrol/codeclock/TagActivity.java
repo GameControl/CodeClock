@@ -79,7 +79,7 @@ public class TagActivity extends Activity {
         gridview.setAdapter(new TagAdapter(this, currentTags));
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                CCUtils.removeTag(TagActivity.this, filename, position, type.equals(CCUtils.JOB));
+                CCUtils.removeTag(TagActivity.this, filename, currentTags.get(position), type.equals(CCUtils.JOB));
                 refreshGridViews();
             }
         });

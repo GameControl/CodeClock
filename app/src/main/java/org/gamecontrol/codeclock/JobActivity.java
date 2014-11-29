@@ -3,6 +3,7 @@ package org.gamecontrol.codeclock;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
@@ -90,6 +91,14 @@ public class JobActivity extends Activity {
         estimate = currentJob.getEstimate();
         Log.d(TAG, "Estimate: " + estimate);
         estimateText.setText(CCUtils.msToHourMinSec(estimate));
+
+        if(currentJob.getCurrentState() == CCUtils.STATE_COMPLETE) {
+            // Change the appearance of the MarkComplete button
+            Button button = (Button) findViewById(R.id.buttonComplete);
+            button.setText(R.string.mark_finished);
+            button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_done_white_24dp, 0, 0, 0);
+        }
+
         update();
         ready = true;
     }
@@ -119,7 +128,7 @@ public class JobActivity extends Activity {
     }
 
     public void toggleTimer(View view) {
-        if(ready){
+        if(ready && (currentJob.getCurrentState() != CCUtils.STATE_COMPLETE)) {
             synchronized (mSynchronizedObject) {
                 if (currentJob.getCurrentState() == CCUtils.STATE_RUNNING) {
                     //change ring to pause
@@ -177,9 +186,42 @@ public class JobActivity extends Activity {
     }
 
     public void markComplete(View view){
-        Toast toast = Toast.makeText(this, "Not Implemented", Toast.LENGTH_SHORT);
-        toast.show();
-//        finish();
+        if(currentJob.getCurrentState() != CCUtils.STATE_COMPLETE) {
+            // Stop the timer if it is still running
+            if (currentJob.getCurrentState() == CCUtils.STATE_RUNNING)
+                toggleTimer(view);
+
+            // Change the state
+            currentJob.setCurrentState(CCUtils.STATE_COMPLETE);
+
+            // Add a "Complete" tag and increments count
+            CCUtils.addTag(JobActivity.this, jobUUID + ".json", CCUtils.COMPLETE, true);
+
+            // Change the appearance of the MarkComplete button
+            Button button = (Button) findViewById(R.id.buttonComplete);
+            button.setText(R.string.mark_finished);
+            button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_done_white_24dp, 0, 0, 0);
+        }
+        else {
+            // Remove the "Complete" tag
+            CCUtils.removeTag(JobActivity.this, jobUUID + ".json", CCUtils.COMPLETE, true);
+
+            // Change the appearance of the MarkComplete button
+            Button button = (Button) findViewById(R.id.buttonComplete);
+            button.setText(R.string.unfinished);
+            button.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
+            // Change the state
+            currentJob.setCurrentState(CCUtils.STATE_PAUSED);
+        }
+
+        // Save the Job state
+        try {
+            CCUtils.JSONToFile(this.getApplicationContext(), currentJob.toJSON(), jobUUID + ".json");
+            Log.d(TAG, "Writing Job: " + currentJob.getUUID());
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
     }
 
     public void update() {

@@ -58,6 +58,7 @@ public class CCUtils {
     // CCUtils local variables
     private static final String TAG = "org.gamecontrol.codeclock.CCUtils";
     static final String BEAT = "org.gamecontrol.BEAT";
+    public static final String COMPLETE = "Complete";
 
     // Method for saving a JSON object to a file
     public static void JSONToFile(Context c, JSONObject json, String filename) {
@@ -137,8 +138,8 @@ public class CCUtils {
         }
     }
 
-    public static void removeTag(Context c, String filename, int index, boolean isJob) {
-        Log.d(TAG, "Removing Tag at index: " + index);
+    public static void removeTag(Context c, String filename, String tag, boolean isJob) {
+        Log.d(TAG, "Removing Tag: " + tag);
         Log.d(TAG, "Filename: " + filename);
         try {
             // Get the JSON
@@ -147,8 +148,8 @@ public class CCUtils {
             // Get the current tags and add the new one
             ArrayList<String> tags = CCUtils.JSONArrayToArrayListString(jsonObject.getJSONArray(CCUtils.TAGS));
             //TODO
-            TagManager.getTagManager(c).removeTag(tags.get(index), isJob);
-            tags.remove(index);
+            TagManager.getTagManager(c).removeTag(tag, isJob);
+            tags.remove(tag);
             jsonObject.remove(CCUtils.TAGS);
             jsonObject.put(CCUtils.TAGS, CCUtils.ArrayListStringToJSONArray(tags));
 

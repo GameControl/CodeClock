@@ -59,11 +59,11 @@
         </FrameLayout>
 
         <Button
+            android:id="@+id/buttonComplete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableStart="@drawable/ic_done_white_24dp"
-            android:text="@string/mark_finished"
+            android:text="@string/unfinished"
             android:onClick="markComplete" />
 
         <LinearLayout
