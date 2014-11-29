@@ -59,6 +59,10 @@ public class TagManager{
         return tagManager;
     }
 
+    public HashMap<String, Integer> getTagMap() {
+        return tags;
+    }
+
     //
     public void addTag(String tag, Boolean isJob) {
         tag = tag.toLowerCase();
