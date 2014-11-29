@@ -13,7 +13,7 @@
     <string name="title_activity_project">ProjectActivity</string>
     <string name="title_activity_create_project">CreateProjectActivity</string>
     <string name="title_activity_create_job">CreateJobActivity</string>
-    <string name="estimate_hint">Pick an estimate...</string>
+    <string name="estimate_hint">Pick an estimate:</string>
     <string name="name_hint">Enter a name...</string>
     <string name="plus">+</string>
     <string name="colon">:</string>
@@ -32,5 +32,7 @@
     <string name="current_tags">Current Tags:</string>
     <string name="estimatePrompt">Estimate:</string>
     <string name="actualPrompt">Actual:</string>
+    <string name="hours">hours</string>
+    <string name="minutes">minutes</string>
 
 </resources>

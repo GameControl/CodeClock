@@ -47,29 +47,66 @@
 
                 android:text="@string/estimate_hint"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="20dp">
-
-                <NumberPicker
-                    android:id="@+id/pickHours"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                android:paddingBottom="20dp" >
 
                 <TextView
+                    android:id="@+id/colon"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
                     android:textSize="30sp"
                     android:text="@string/colon" />
 
                 <NumberPicker
+                    android:id="@+id/pickHours"
+                    android:layout_toStartOf="@id/colon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+                <NumberPicker
                     android:id="@+id/pickMinutes"
+                    android:layout_toEndOf="@+id/colon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-            </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/text_colon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:layout_centerInParent="true"
+                android:text="@string/colon"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hours"
+                android:layout_toStartOf="@+id/text_colon"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/text_colon"
+                android:text="@string/minutes"
+                android:textSize="20sp" />
+
+
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
