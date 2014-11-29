@@ -51,8 +51,18 @@ public class ProjectActivity extends Activity {
 
             // construct a new Project object with the information we just read
             project = new Project(UUID.fromString(projectUUID), tags, projectJSON.getString(CCUtils.NOTES), jobUUIDs, jobNames);
+
+            ArrayList<Long> startTimes = new ArrayList<Long>();
+            ArrayList<Long> runningTimes = new ArrayList<Long>();
+            ArrayList<Integer> status = new ArrayList<Integer>();
+
+            CCUtils.harvestTimes(ProjectActivity.this, projectUUID, startTimes, runningTimes, status);
+            
+            addGraph();
             ActionBar actionBar = getActionBar();
-            actionBar.setTitle(projectName);
+            if(actionBar!=null) {
+                actionBar.setTitle(projectName);
+            }
 
         } catch (Exception e){
             Log.d(TAG, e.toString());
@@ -71,7 +81,6 @@ public class ProjectActivity extends Activity {
         Intent intent = getIntent();
         projectName = intent.getStringExtra(CCUtils.PROJECT_NAME);
         projectUUID = intent.getStringExtra(CCUtils.PROJECT_UUID);
-        addGraph();
     }
 
     @Override
