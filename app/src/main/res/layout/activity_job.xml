@@ -36,82 +36,88 @@
             android:onClick="detailsButton"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <FrameLayout
+        android:layout_height="wrap_content"
+        android:layout_above="@id/buttonLayout">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="45dp"
-            android:paddingBottom="45dp"
-            android:gravity="center" >
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="45dp"
+                android:paddingBottom="45dp"
+                android:gravity="center" >
+
+                <Button
+                    android:id="@+id/jobTimerButton"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dial_stopped"
+                    android:layout_gravity="center"
+                    android:textSize="50sp"
+                    android:text="@string/zero_time"
+                    android:onClick="toggleTimer" />
+            </FrameLayout>
 
             <Button
-                android:id="@+id/jobTimerButton"
-                android:layout_width="250dp"
+                android:id="@+id/buttonComplete"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/dial_stopped"
                 android:layout_gravity="center"
-                android:textSize="50sp"
-                android:text="@string/zero_time"
-                android:onClick="toggleTimer" />
-        </FrameLayout>
-
-        <Button
-            android:id="@+id/buttonComplete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/unfinished"
-            android:onClick="markComplete" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:orientation="vertical" >
+                android:text="@string/unfinished"
+                android:onClick="markComplete" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/estimatePrompt"
-                    android:textSize="30sp" />
+                android:paddingTop="10dp"
+                android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/estimateText"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="@string/zero_time"
-                    android:textSize="30sp" />
-            </LinearLayout>
+                    android:orientation="horizontal" >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/estimatePrompt"
+                        android:textSize="30sp" />
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                    <TextView
+                        android:id="@+id/estimateText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="@string/zero_time"
+                        android:textSize="30sp" />
+                </LinearLayout>
 
-                <TextView
-                    android:paddingTop="10dp"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/actualPrompt"
-                    android:textSize="30sp" />
+                    android:paddingBottom="10dp"
+                    android:orientation="horizontal" >
 
-                <TextView
-                    android:id="@+id/actualText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="@string/zero_time"
-                    android:textSize="30sp" />
+                    <TextView
+                        android:paddingTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/actualPrompt"
+                        android:textSize="30sp" />
+
+                    <TextView
+                        android:id="@+id/actualText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="@string/zero_time"
+                        android:textSize="30sp" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
 

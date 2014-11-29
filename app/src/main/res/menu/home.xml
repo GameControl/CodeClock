@@ -2,5 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Home" >
     <item android:id="@+id/wipe_files"
-        android:title="Wipe Files" />
+        android:title="@string/wipe_files" />
+    <item android:id="@+id/load_demo"
+        android:title="@string/load_demo" />
 </menu>

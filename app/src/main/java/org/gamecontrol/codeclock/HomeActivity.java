@@ -3,9 +3,11 @@ package org.gamecontrol.codeclock;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +21,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 
 
@@ -108,6 +113,9 @@ public class HomeActivity extends Activity {
             case R.id.wipe_files:
                 wipeFiles();
                 return true;
+            case R.id.load_demo:
+                loadDemo();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -116,14 +124,59 @@ public class HomeActivity extends Activity {
     public void createProject(View v) {
         Intent intent = new Intent(HomeActivity.this, CreateProjectActivity.class);
         startActivity(intent);
+    }
 
+    private void createDemoFiles() {
+        Log.d(TAG, "Creating demo files");
+        try {
+            OutputStream out = this.openFileOutput("home.json", Context.MODE_PRIVATE);
+            Writer writer = new OutputStreamWriter(out);
+            writer.write(DemoUtils.HOMEFILE);
+            writer.close();
+
+            out = this.openFileOutput(DemoUtils.PROJECTUUID + ".json", Context.MODE_PRIVATE);
+            writer = new OutputStreamWriter(out);
+            writer.write(DemoUtils.PROJECTFILE);
+            writer.close();
+
+            out = this.openFileOutput(DemoUtils.JOB1UUID + ".json", Context.MODE_PRIVATE);
+            writer = new OutputStreamWriter(out);
+            writer.write(DemoUtils.JOB1FILE);
+            writer.close();
+
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
+    }
+
+    private void loadDemo() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Load Demo Files")
+                .setMessage("This will delete all current files. Are you sure?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String[] files = HomeActivity.this.fileList();
+                        for(String file : files) {
+                            HomeActivity.this.deleteFile(file);
+                        }
+                        createDemoFiles();
+                        initHome();
+                        refreshGridView();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void wipeFiles() {
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Wipe Files")
-                .setMessage("Are you sure you want to delete all files?")
+                .setMessage("This will delete all current files. Are you sure?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
                     @Override

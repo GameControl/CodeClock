@@ -34,5 +34,7 @@
     <string name="actualPrompt">Actual:</string>
     <string name="hours">hours</string>
     <string name="minutes">minutes</string>
+    <string name="load_demo">Load Demo</string>
+    <string name="wipe_files">Wipe Files</string>
 
 </resources>
