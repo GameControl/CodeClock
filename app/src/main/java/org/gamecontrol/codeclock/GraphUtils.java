@@ -1,7 +1,8 @@
 package org.gamecontrol.codeclock;
 
 import android.content.Context;
-import android.text.format.Time;
+import android.text.format.DateUtils;
+import android.util.Log;
 
 import com.jjoe64.graphview.BarGraphView;
 import com.jjoe64.graphview.CustomLabelFormatter;
@@ -10,8 +11,7 @@ import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewStyle;
 import com.jjoe64.graphview.LineGraphView;
 
-import java.util.Arrays;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
@@ -22,6 +22,117 @@ import java.util.Set;
  * Graph Utility Object
  */
 public class GraphUtils {
+    private final static String TAG = "org.gamecontrol.codeclock.GraphUtils";
+    private final static int SUNDAY = 0;
+    private final static int MONDAY = 1;
+    private final static int TUESDAY = 2;
+    private final static int WEDNESDAY = 3;
+    private final static int THURSDAY = 4;
+    private final static int FRIDAY = 5;
+    private final static int SATURDAY = 6;
+
+    public static GraphView getWeeklyFrequencyGraph(Context c, ArrayList<Long> startTimes, ArrayList<Long> runningTimes, Boolean randomTest) {
+        Long[] timePerDay = new Long[7];
+
+        for (int i = 0; i < timePerDay.length; i++) {
+            timePerDay[i] = (long) 0; //(long) i*10;
+        }
+
+        for (Long st : startTimes) {
+            String day = DateUtils.formatDateTime(c, st, DateUtils.FORMAT_SHOW_WEEKDAY);
+            Log.d(TAG, st.toString() + " : " + day);
+        }
+
+        for (Long rt : runningTimes) {
+            Log.d(TAG, rt.toString());
+        }
+
+        Long[] stArray = new Long[startTimes.size()];
+        startTimes.toArray(stArray);
+
+        Long[] rtArray = new Long[runningTimes.size()];
+        runningTimes.toArray(rtArray);
+
+        for (int i = 0; i < stArray.length; i++) {
+            Log.d(TAG, stArray[i] + " : " + rtArray[i]);
+        }
+
+        for(int i = 0; i < stArray.length; i++) {
+            long time = stArray[i];
+            String day = DateUtils.formatDateTime(c, time, DateUtils.FORMAT_SHOW_WEEKDAY);
+
+            Log.d(TAG, "time: " + time + " day: " + day);
+
+            rtArray[i] = (rtArray[i] / 1000) % 60;
+
+            if (day.equals("Sunday"))
+                timePerDay[SUNDAY] += rtArray[i];
+            else if (day.equals("Monday"))
+                timePerDay[MONDAY] += rtArray[i];
+            else if (day.equals("Tuesday"))
+                timePerDay[TUESDAY] += rtArray[i];
+            else if (day.equals("Wednesday"))
+                timePerDay[WEDNESDAY] += rtArray[i];
+            else if (day.equals("Thursday"))
+                timePerDay[THURSDAY] += rtArray[i];
+            else if (day.equals("Friday"))
+                timePerDay[FRIDAY] += rtArray[i];
+            else if (day.equals("Saturday"))
+                timePerDay[SATURDAY] += rtArray[i];
+        }
+
+        GraphView.GraphViewData[] data = new GraphView.GraphViewData[7];
+
+        if (randomTest) {
+            Random randObj = new Random();
+            for (int i = 0; i < 7; i++) {
+                int randNum = (int) Math.floor(randObj.nextDouble() * 100);
+                Log.d(TAG, "data[" + i + "] = " + randNum);
+                data[i] = new GraphView.GraphViewData(i, randNum);
+            }
+        }
+
+        else {
+            for (int i = 0; i < 7; i++) {
+                data[i] = new GraphView.GraphViewData(i, timePerDay[i]);
+            }
+        }
+
+        BarGraphView weeklyGraph =  new BarGraphView(c, "Weekday Frequency Graph");
+        weeklyGraph.addSeries(new GraphViewSeries(data));
+
+        //weeklyGraph.setViewPort(0, 4);
+        weeklyGraph.getGraphViewStyle().setNumHorizontalLabels(7);
+
+        weeklyGraph.getGraphViewStyle().setGridStyle(GraphViewStyle.GridStyle.HORIZONTAL);
+        weeklyGraph.setCustomLabelFormatter(new CustomLabelFormatter() {
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX) {
+                    int intVal = (int) Math.round(value);
+                    switch (intVal) {
+                        case 0:
+                            return "Sun";
+                        case 1:
+                            return "Mon";
+                        case 2:
+                            return "Tue";
+                        case 3:
+                            return "Wed";
+                        case 4:
+                            return "Thu";
+                        case 5:
+                            return "Fri";
+                        case 6:
+                            return "Sat";
+                    }
+                }
+                return null; // let graphview generate Y-axis label for us
+            }
+        });
+
+        return weeklyGraph;
+    }
 
     public static GraphView getTagFrequencyGraph(Context c, Boolean randomVals) {
         LineGraphView tagGraph =  new LineGraphView(c, "Tag Frequency Graph");
