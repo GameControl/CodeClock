@@ -28,7 +28,7 @@
                 android:id="@+id/CurrentTagsGridView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:numColumns="3" />
+                android:numColumns="2" />
         </LinearLayout>
 
         <View
@@ -52,7 +52,7 @@
                 android:id="@+id/CommonTagsGridView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:numColumns="3" />
+                android:numColumns="2" />
         </LinearLayout>
     </LinearLayout>
 
@@ -61,28 +61,42 @@
         android:layout_alignParentBottom="true"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical" >
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@android:color/holo_blue_light"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
             <TextView
+                android:id="@+id/addTagPrompt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/add_tag"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:paddingTop="10dp"
+                android:layout_alignParentStart="true"/>
 
             <EditText
-                android:layout_width="fill_parent"
+                android:id="@+id/newTagName"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/new_tag_hint"/>
-        </LinearLayout>
+                android:hint="@string/new_tag_hint"
+                android:layout_toLeftOf="@+id/createTagButton"
+                android:layout_toRightOf="@+id/addTagPrompt"/>
+
+            <ImageButton
+                android:id="@+id/createTagButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_new"
+                android:layout_alignParentEnd="true"
+                android:onClick="createTag" />
+        </RelativeLayout>
     </LinearLayout>
 
 </RelativeLayout>

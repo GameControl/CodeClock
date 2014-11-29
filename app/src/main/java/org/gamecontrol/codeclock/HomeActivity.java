@@ -1,7 +1,9 @@
 package org.gamecontrol.codeclock;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -106,9 +108,6 @@ public class HomeActivity extends Activity {
             case R.id.wipe_files:
                 wipeFiles();
                 return true;
-            case R.id.action_settings:
-                HomeActivity.openSettings(HomeActivity.this);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -121,17 +120,25 @@ public class HomeActivity extends Activity {
     }
 
     private void wipeFiles() {
-        String[] files = this.fileList();
-        for(String file : files) {
-            this.deleteFile(file);
-        }
-        initHome();
-        refreshGridView();
-    }
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Wipe Files")
+                .setMessage("Are you sure you want to delete all files?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
-    protected static void openSettings(Activity activity){
-        Intent intent = new Intent(activity, SettingsActivity.class);
-        activity.startActivity(intent);
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String[] files = HomeActivity.this.fileList();
+                        for(String file : files) {
+                            HomeActivity.this.deleteFile(file);
+                        }
+                        initHome();
+                        refreshGridView();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     /**
