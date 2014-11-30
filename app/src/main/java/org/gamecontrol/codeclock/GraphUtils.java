@@ -1,13 +1,17 @@
 package org.gamecontrol.codeclock;
 
 import android.content.Context;
+import android.text.format.Time;
 
 import com.jjoe64.graphview.BarGraphView;
 import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewStyle;
+import com.jjoe64.graphview.LineGraphView;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
@@ -17,10 +21,11 @@ import java.util.Set;
  *
  * Graph Utility Object
  */
-public class GraphUtil {
+public class GraphUtils {
 
-    public static GraphView getTagFrequencyGraph(Context c) {
-        GraphView tagGraph =  new BarGraphView(c, "Tag Frequency Graph");
+    public static GraphView getTagFrequencyGraph(Context c, Boolean randomVals) {
+        LineGraphView tagGraph =  new LineGraphView(c, "Tag Frequency Graph");
+        tagGraph.setDrawDataPoints(true);
 
         TagManager tagManager = TagManager.getTagManager(c);
         HashMap<String, Integer> tagMap = tagManager.getTagMap();
@@ -33,26 +38,31 @@ public class GraphUtil {
             data[i] = new GraphView.GraphViewData(i, tagMap.get(tagNameArray[i]));
         }
 
-        Random randObj = new Random();
-        for (int i = 0; i < data.length; i++) {
-            data[i] = new GraphView.GraphViewData(i, Math.floor(randObj.nextDouble()*100));
+        if (randomVals) {
+            Random randObj = new Random();
+            for (int i = 0; i < data.length; i++) {
+                int randNum = (int) Math.floor(randObj.nextDouble() * 100);
+                data[i] = new GraphView.GraphViewData(i, randNum);
+            }
         }
 
         tagGraph.addSeries(new GraphViewSeries(data));
-        //tagGraph.setHorizontalLabels(new String[] {"java", "c++", "python", "ruby"});
-        // set view port, start=2, size=5
-        tagGraph.setViewPort(0, 5);
-        tagGraph.setScrollable(true);
-        // optional - activate scaling / zooming
-        //tagGraph.setScalable(true);
-        //tagGraph.getGraphViewStyle().setNumVerticalLabels(5);
+
+
+        tagGraph.setViewPort(0, 4);
         tagGraph.getGraphViewStyle().setNumHorizontalLabels(5);
+
+        tagGraph.setManualYAxisBounds(100, 0);
+        tagGraph.setManualYAxis(true);
+
+        tagGraph.setScrollable(true);
+
         tagGraph.getGraphViewStyle().setGridStyle(GraphViewStyle.GridStyle.HORIZONTAL);
         tagGraph.setCustomLabelFormatter(new CustomLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
-                    return tagNameArray[(int) value];
+                    return tagNameArray[(int) Math.round(value)];
                 }
                 return null; // let graphview generate Y-axis label for us
             }

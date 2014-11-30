@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -168,7 +167,7 @@ public class ProjectActivity extends Activity {
         // optional - activate scaling / zooming
         graphView.setScalable(true);*/
 
-        GraphView graphView = GraphUtil.getTagFrequencyGraph(this.getApplicationContext());
+        GraphView graphView = GraphUtils.getTagFrequencyGraph(this.getApplicationContext(), true);
 
         FrameLayout layout = (FrameLayout) findViewById(R.id.projectDataView);
         layout.addView(graphView);
