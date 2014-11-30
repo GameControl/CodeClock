@@ -140,6 +140,22 @@ public class CCUtils {
         }
     }
 
+    public static void deleteJob(Context c, String jobUUID) {
+        try {
+            JSONObject jobObject = fileToJSON(c, jobUUID + ".json");
+            JSONArray tagNamesJSON = jobObject.getJSONArray(TAGS);
+            ArrayList<String> tagNames = JSONArrayToArrayListString(tagNamesJSON);
+            TagManager tagManager = TagManager.getTagManager(c);
+            for (String s : tagNames) {
+                tagManager.removeTag(s, true);
+            }
+            c.deleteFile(jobUUID + ".json");
+
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
+    }
+
     public static void changeNotes(Context c, String filename, String new_notes) {
         Log.d(TAG, "New Notes: " + new_notes);
         Log.d(TAG, "Filename: " + filename);

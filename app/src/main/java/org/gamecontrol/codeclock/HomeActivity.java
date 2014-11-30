@@ -33,6 +33,7 @@ public class HomeActivity extends Activity {
 
     private static ArrayList<String> fileNames;
     private static ArrayList<String> projectNames;
+    private int toDelete;
 
     private void getProjects(){
         fileNames = new ArrayList<String>();
@@ -68,6 +69,50 @@ public class HomeActivity extends Activity {
                 intent.putExtra(CCUtils.PROJECT_UUID, fileNames.get(position));
                 intent.putExtra(CCUtils.PROJECT_NAME, projectNames.get(position));
                 startActivity(intent);
+            }
+        });
+        gridview.setLongClickable(true);
+        gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                toDelete = position;
+                new AlertDialog.Builder(HomeActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Delete Project")
+                        .setMessage("This will delete the selected project. Are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    // Get project file to be deleted
+                                    JSONObject projectJSON = CCUtils.fileToJSON(HomeActivity.this, fileNames.get(toDelete) + ".json");
+                                    JSONArray jobListJSON = projectJSON.getJSONArray(CCUtils.JOB_UUIDS);
+                                    ArrayList<String> jobList = CCUtils.JSONArrayToArrayListString(jobListJSON);
+                                    // Delete each job listed in the project file
+                                    for (String s : jobList) {
+                                        CCUtils.deleteJob(HomeActivity.this, s);
+                                    }
+                                    // Delete the project file
+                                    HomeActivity.this.deleteFile(fileNames.get(toDelete) + ".json");
+
+                                    // Get home file, update, then save
+                                    JSONObject homeJSON = CCUtils.fileToJSON(HomeActivity.this, "home.json");
+                                    homeJSON.remove(projectNames.get(toDelete));
+                                    CCUtils.JSONToFile(HomeActivity.this, homeJSON, "home.json");
+
+                                } catch (Exception e) {
+                                    Log.d(TAG, e.toString());
+                                }
+                                // get data and redraw
+                                refreshGridView();
+                            }
+
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+                return true;
             }
         });
     }

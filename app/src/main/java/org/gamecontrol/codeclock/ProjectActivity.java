@@ -2,6 +2,8 @@ package org.gamecontrol.codeclock;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +21,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.UUID;
 
-
 public class ProjectActivity extends Activity {
 
     private final static String TAG = "org.gamecontrol.codeclock.ProjectActivity";
@@ -34,6 +35,7 @@ public class ProjectActivity extends Activity {
     private ArrayList<Long> startTimes;
     private ArrayList<Long> runningTimes;
     private Project project;
+    private int toDelete;
 
     private void initProject(){
         try {
@@ -121,6 +123,38 @@ public class ProjectActivity extends Activity {
                 intent.putExtra(CCUtils.JOB_NAME, project.getJobNames().get(position));
                 intent.putExtra(CCUtils.JOB_UUID, project.getJobUUIDs().get(position));
                 startActivity(intent);
+            }
+        });
+        listView.setLongClickable(true);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                toDelete = position;
+                new AlertDialog.Builder(ProjectActivity.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Delete Job")
+                        .setMessage("This will delete the selected job. Are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                CCUtils.deleteJob(ProjectActivity.this, project.getJobUUIDs().get(toDelete));
+                                project.getJobNames().remove(toDelete);
+                                project.getJobUUIDs().remove(toDelete);
+                                try {
+                                    CCUtils.JSONToFile(ProjectActivity.this, project.toJSON(), projectUUID + ".json");
+                                } catch (Exception e) {
+                                    Log.d(TAG, e.toString());
+                                }
+                                //initProject();
+                                refreshListView();
+                            }
+
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+                return true;
             }
         });
     }
