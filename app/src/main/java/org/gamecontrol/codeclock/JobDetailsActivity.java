@@ -4,9 +4,9 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,7 +34,8 @@ public class JobDetailsActivity extends Activity {
 
         // Set the Action Bar Title
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle(jobName + " - Details");
+        if(actionBar != null)
+            actionBar.setTitle(jobName + " - Details");
     }
 
     @Override
@@ -47,6 +48,7 @@ public class JobDetailsActivity extends Activity {
 
     public void updateSettings(View v) {
         if(!clicked) {
+            Log.d(TAG, "Changing Job Details");
             clicked = true;
             //TODO prevent dupe names
             EditText newJobName = (EditText) findViewById(R.id.editJobName);

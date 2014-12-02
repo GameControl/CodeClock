@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -14,6 +13,7 @@ import org.json.JSONObject;
 
 
 public class NotesActivity extends Activity {
+
     private String TAG = "org.gamecontrol.codeclock.NotesActivity.java";
     private String filename;
 
@@ -29,7 +29,8 @@ public class NotesActivity extends Activity {
 
         // Set the Action Bar Title
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle(name + " - Notes");
+        if(actionBar != null)
+            actionBar.setTitle(name + " - Notes");
     }
 
     @Override

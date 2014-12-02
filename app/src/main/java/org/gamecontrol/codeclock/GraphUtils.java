@@ -54,31 +54,31 @@ public class GraphUtils {
 
             if (day.equals("Sunday")) {
                 Log.d(TAG, "Sunday <--- " + rtArray[i]);
-                timePerDay[0] += rtArray[i];
+                timePerDay[SUNDAY] += rtArray[i];
             }
             else if (day.equals("Monday")) {
                 Log.d(TAG, "Monday <--- " + rtArray[i]);
-                timePerDay[1] += rtArray[i];
+                timePerDay[MONDAY] += rtArray[i];
             }
             else if (day.equals("Tuesday")) {
                 Log.d(TAG, "Tuesday <--- " + rtArray[i]);
-                timePerDay[2] += rtArray[i];
+                timePerDay[TUESDAY] += rtArray[i];
             }
             else if (day.equals("Wednesday")) {
                 Log.d(TAG, "Wednesday <--- " + rtArray[i]);
-                timePerDay[3] += rtArray[i];
+                timePerDay[WEDNESDAY] += rtArray[i];
             }
             else if (day.equals("Thursday")) {
                 Log.d(TAG, "Thursday <--- " + rtArray[i]);
-                timePerDay[4] += rtArray[i];
+                timePerDay[THURSDAY] += rtArray[i];
             }
             else if (day.equals("Friday")) {
                 Log.d(TAG, "Friday <--- " + rtArray[i]);
-                timePerDay[5] += rtArray[i];
+                timePerDay[FRIDAY] += rtArray[i];
             }
             else if (day.equals("Saturday")) {
                 Log.d(TAG, "Saturday <--- " + rtArray[i]);
-                timePerDay[6] += rtArray[i];
+                timePerDay[SATURDAY] += rtArray[i];
             }
         }
 

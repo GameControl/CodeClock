@@ -6,11 +6,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
-import android.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 public class Kalima extends Service {
 

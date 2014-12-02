@@ -24,9 +24,6 @@ import java.util.UUID;
 public class ProjectActivity extends Activity {
 
     private final static String TAG = "org.gamecontrol.codeclock.ProjectActivity";
-    public final static String JOB_UUID = "org.gamecontrol.codeclock.JOB_UUID";
-    public final static String JOB_NAME = "org.gamecontrol.codeclock.JOB_NAME";
-    private final static String JOB_KEY = "jobs";
 
     private String projectName;
     private String projectUUID;
