@@ -196,9 +196,7 @@ public class ProjectActivity extends Activity {
     }
 
     public void addGraph() {
-        //GraphView graphView = GraphUtils.getTagFrequencyGraph(this.getApplicationContext(), true);
-
-        GraphView graphView = GraphUtils.getWeeklyFrequencyGraph(this.getApplicationContext(), startTimes, runningTimes, false);
+        GraphView graphView = GraphUtils.getWeeklyFrequencyGraph(this.getApplicationContext(), startTimes, runningTimes);
         graphView.redrawAll();
         FrameLayout layout = (FrameLayout) findViewById(R.id.projectDataView);
         layout.addView(graphView);
