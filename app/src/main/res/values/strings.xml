@@ -31,7 +31,7 @@
     <string name="common_tags">Common Tags:</string>
     <string name="current_tags">Current Tags:</string>
     <string name="estimatePrompt">Estimate:</string>
-    <string name="actualPrompt">Actual:</string>
+    <string name="differencePrompt">Difference:</string>
     <string name="hours">hours</string>
     <string name="minutes">minutes</string>
     <string name="load_demo">Load Demo</string>
