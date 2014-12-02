@@ -42,7 +42,6 @@ public class JobActivity extends Activity {
 
     private Job currentJob;
     private JobBeatReceiver beatReceiver;
-    private CCNotificationManager mCCNotificationManager;
     private boolean beatRegistered;
 
     @Override
