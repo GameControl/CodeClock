@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -174,19 +173,32 @@ public class HomeActivity extends Activity {
     private void createDemoFiles() {
         Log.d(TAG, "Creating demo files");
         try {
+            // Write home.json
             OutputStream out = this.openFileOutput("home.json", Context.MODE_PRIVATE);
             Writer writer = new OutputStreamWriter(out);
             writer.write(DemoUtils.HOMEFILE);
             writer.close();
 
+            // Write the project file
             out = this.openFileOutput(DemoUtils.PROJECTUUID + ".json", Context.MODE_PRIVATE);
             writer = new OutputStreamWriter(out);
             writer.write(DemoUtils.PROJECTFILE);
             writer.close();
 
+            // Write the job files
             out = this.openFileOutput(DemoUtils.JOB1UUID + ".json", Context.MODE_PRIVATE);
             writer = new OutputStreamWriter(out);
             writer.write(DemoUtils.JOB1FILE);
+            writer.close();
+
+            out = this.openFileOutput(DemoUtils.JOB2UUID + ".json", Context.MODE_PRIVATE);
+            writer = new OutputStreamWriter(out);
+            writer.write(DemoUtils.JOB2FILE);
+            writer.close();
+
+            out = this.openFileOutput(DemoUtils.JOB3UUID + ".json", Context.MODE_PRIVATE);
+            writer = new OutputStreamWriter(out);
+            writer.write(DemoUtils.JOB3FILE);
             writer.close();
 
         } catch (Exception e) {
@@ -198,7 +210,7 @@ public class HomeActivity extends Activity {
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Load Demo Files")
-                .setMessage("This will delete all current files. Are you sure?")
+                .setMessage("This will delete all current files and load Demo files. Are you sure?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
                     @Override

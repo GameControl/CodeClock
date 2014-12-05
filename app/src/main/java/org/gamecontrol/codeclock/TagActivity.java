@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 
 
 public class TagActivity extends Activity {
-    private String name;
     private String filename;
     private TagManager tagManager;
     private ArrayList<String> currentTags;
@@ -35,13 +33,14 @@ public class TagActivity extends Activity {
 
         // Get the Intent from ProjectActivity
         Intent intent = getIntent();
-        name = intent.getStringExtra(CCUtils.NAME);
+        String name = intent.getStringExtra(CCUtils.NAME);
         filename = intent.getStringExtra(CCUtils.FILENAME) + ".json";
         type = intent.getStringExtra(CCUtils.TYPE);
 
         // Set the Action Bar Title
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle(name + " - Tags");
+        if(actionBar != null)
+            actionBar.setTitle(name + " - Tags");
     }
 
     @Override

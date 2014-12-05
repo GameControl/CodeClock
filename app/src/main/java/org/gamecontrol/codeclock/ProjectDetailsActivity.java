@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,7 +13,6 @@ import android.widget.Toast;
 
 public class ProjectDetailsActivity extends Activity {
     private String TAG = "org.gamecontrol.codeclock.ProjectDetailsActivity.java";
-    private String filename;
     private String projectName;
     private static boolean clicked = false;
 
@@ -26,11 +24,11 @@ public class ProjectDetailsActivity extends Activity {
         // Get the Intent from ProjectActivity
         Intent intent = getIntent();
         projectName = intent.getStringExtra(CCUtils.PROJECT_NAME);
-        filename = intent.getStringExtra(CCUtils.FILENAME);
 
         // Set the Action Bar Title
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle(projectName + " - Details");
+        if(actionBar!= null)
+            actionBar.setTitle(projectName + " - Details");
     }
 
     @Override
