@@ -64,6 +64,7 @@ public class ProjectDetailsActivity extends Activity {
             resultIntent.putExtra(CCUtils.PROJECT_NAME, newProjectNameString);
             setResult(Activity.RESULT_OK, resultIntent);
 
+            clicked = false;
             finish();
         }
     }

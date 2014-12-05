@@ -52,7 +52,7 @@ public class JobDetailsActivity extends Activity {
             EditText newJobName = (EditText) findViewById(R.id.editJobName);
             String newJobNameString = newJobName.getText().toString();
 
-            // Warn and prevent user from creating a project with an empty name
+            // Warn and prevent user from creating a job with an empty name
             if (newJobNameString.equals("")) {
                 Toast toast = Toast.makeText(this, "Please enter a job name.", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.TOP, 0, 250);
@@ -68,6 +68,7 @@ public class JobDetailsActivity extends Activity {
             resultIntent.putExtra(CCUtils.JOB_NAME, newJobNameString);
             setResult(Activity.RESULT_OK, resultIntent);
 
+            clicked = false;
             finish();
         }
     }
