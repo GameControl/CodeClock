@@ -157,9 +157,9 @@ public class HomeActivity extends Activity {
             case R.id.wipe_files:
                 wipeFiles();
                 return true;
-            case R.id.load_demo:
+            /*case R.id.load_demo:
                 loadDemo();
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
